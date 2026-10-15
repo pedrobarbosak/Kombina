@@ -174,7 +174,11 @@ function formatDate(iso) {
   return Number.isNaN(d.getTime()) ? iso : d.toLocaleDateString(getLang() === 'pt' ? 'pt-PT' : 'en-GB');
 }
 
-const logo = (store) => (store.logo ? `<img src="${esc(store.logo)}" alt="" />` : '');
+const logoUrl = (store) => store.logo || `https://s1.kuantokusta.pt/img_upload/logins/${store.sellerId}_1.png`;
+const logo = (store) => `<img class="store-logo" src="${esc(logoUrl(store))}" alt="" />`;
+
+const ICON_HIDE = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 3l18 18"/><path d="M10.6 10.6a2 2 0 0 0 2.8 2.8"/><path d="M9.9 5.2A10.4 10.4 0 0 1 12 5c5 0 9 4 10 7a11.7 11.7 0 0 1-2.2 3.3"/><path d="M6.6 6.6C4.2 8 2.7 10.2 2 12c1 3 5 7 10 7a10 10 0 0 0 4.4-1"/></svg>';
+const ICON_SHOW = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg>';
 
 function storeName(store) {
   return store.storeSlug
@@ -405,7 +409,7 @@ function renderStores() {
         ${lines(store, allIds, { withTotals: false, withImages: true })}
         <footer class="actions">
           <button type="button" class="link edit" data-seller="${esc(store.sellerId)}">✎ ${t('fix_shipping')}</button>
-          <button type="button" class="link" data-hide="${esc(store.sellerId)}" data-name="${esc(store.storeName)}">${t('hide_store')}</button>
+          <button type="button" class="link icon-btn" data-hide="${esc(store.sellerId)}" data-name="${esc(store.storeName)}">${ICON_HIDE} ${t('hide_store')}</button>
           <span class="spacer"></span>
           ${openAllButton(store, allIds)}
         </footer>
@@ -458,14 +462,14 @@ function renderRules() {
         const title = storeNotes(d) ? ` title="${esc(storeNotes(d))}"` : '';
         const hidden = Boolean(state.hidden[store.sellerId]);
         return `<tr class="${store.rank < Infinity ? 'in-list' : ''} ${hidden ? 'hidden-store' : ''}">
-          <td>${esc(store.storeName)}${hidden ? ` <span class="tag">${t('hidden_tag')}</span>` : ''}</td>
+          <td class="store-cell">${logo(store)}<span>${esc(store.storeName)}${hidden ? ` <span class="tag">${t('hidden_tag')}</span>` : ''}</span></td>
           <td class="num">${m.base ? money(m.base) : `<span class="tag free">${t('ship_free')}</span>`}</td>
           <td class="num">${m.freeAbove == null ? `<span class="muted">${t('unknown')}</span>` : m.freeAbove === 0 ? t('always') : money(m.freeAbove)}</td>
           <td class="src"${title}>${basedOn(store)}</td>
           <td><button type="button" class="edit" data-seller="${esc(store.sellerId)}" title="${esc(t('edit_shipping'))}">✎</button></td>
           <td>${hidden
-            ? `<button type="button" class="link small" data-unhide="${esc(store.sellerId)}">${t('unhide_store')}</button>`
-            : `<button type="button" class="link small" data-hide="${esc(store.sellerId)}" data-name="${esc(store.storeName)}">${t('hide_store')}</button>`}</td>
+            ? `<button type="button" class="link small icon-btn" data-unhide="${esc(store.sellerId)}">${ICON_SHOW} ${t('unhide_store')}</button>`
+            : `<button type="button" class="link small icon-btn" data-hide="${esc(store.sellerId)}" data-name="${esc(store.storeName)}">${ICON_HIDE} ${t('hide_store')}</button>`}</td>
         </tr>`;
       })
       .join('')}${shown.length ? '' : `<tr><td colspan="6" class="muted">${t('rules_no_match')}</td></tr>`}</tbody>`;
@@ -490,7 +494,7 @@ function renderHidden() {
   const entries = Object.entries(state.hidden);
   $('#hidden-section').hidden = !entries.length;
   $('#hidden-list').innerHTML = entries
-    .map(([id, h]) => `<span class="chip">${esc(h.name)} <button type="button" class="link" data-unhide="${esc(id)}" title="${esc(t('unhide_store'))}">✕</button></span>`)
+    .map(([id, h]) => `<span class="chip">${logo({ sellerId: id })}${esc(h.name)} <button type="button" class="link icon-btn" data-unhide="${esc(id)}" title="${esc(t('unhide_store'))}">${ICON_SHOW}</button></span>`)
     .join('');
 }
 

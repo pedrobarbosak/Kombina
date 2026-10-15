@@ -20,7 +20,7 @@ const pt = {
   access_allow: 'Permitir',
   lang_label: 'Idioma',
   tab_compare: 'Comparar',
-  tab_rules: 'Portes de envio',
+  tab_rules: 'Lojas',
   btn_add: 'Adicionar ao KCompare',
 
   // plurals
@@ -101,11 +101,11 @@ const pt = {
   coverage_all: 'os {n} artigos',
   coverage_count: '{covered} de {n} artigos',
   fix_shipping: 'Corrigir portes',
-  hide_store: 'Ocultar loja',
+  hide_store: 'Esconder loja',
   unhide_store: 'Mostrar',
-  hidden_title: 'Lojas ocultas',
-  hidden_intro: 'Estas lojas ficam fora da comparação. Podes ocultar uma loja a partir do cartão dela em “Todas as lojas” ou da tabela abaixo.',
-  hidden_tag: 'oculta',
+  hidden_title: 'Lojas escondidas',
+  hidden_intro: 'Estas lojas ficam fora da comparação. Podes esconder uma loja a partir do cartão dela em “Todas as lojas” ou da tabela abaixo.',
+  hidden_tag: 'escondida',
   coverage_partial: '{covered} de {n} artigos, falta {missing}|{covered} de {n} artigos, faltam {missing}',
   incl_shipping: 'com {amount} de portes',
   free_shipping: 'portes grátis',
@@ -173,7 +173,7 @@ const en = {
   access_allow: 'Allow',
   lang_label: 'Language',
   tab_compare: 'Compare',
-  tab_rules: 'Shipping',
+  tab_rules: 'Stores',
   btn_add: 'Add to KCompare',
 
   items: '{n} item|{n} items',
