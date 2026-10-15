@@ -4,6 +4,7 @@
   "private": true,
   "type": "module",
   "description": "Kombina: browser extension that finds the store where a whole KuantoKusta shopping list is cheapest.",
+  "license": "MIT",
   "scripts": {
     "test": "node --test \"tests/**/*.test.mjs\"",
     "lint": "web-ext lint",
