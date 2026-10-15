@@ -126,6 +126,23 @@ export async function setOverride(sellerId, override) {
   return overrides;
 }
 
+// Stores the user never wants to buy from: { [sellerId]: { name } }. Their offers are ignored.
+export const getHidden = () => get('hidden', {});
+
+export async function hideStore(sellerId, name) {
+  const hidden = await getHidden();
+  hidden[sellerId] = { name };
+  await set('hidden', hidden);
+  return hidden;
+}
+
+export async function unhideStore(sellerId) {
+  const hidden = await getHidden();
+  delete hidden[sellerId];
+  await set('hidden', hidden);
+  return hidden;
+}
+
 const OBS_MAX_AGE = 30 * 24 * 3600 * 1000;
 
 export const getShipObs = () => get('shipObs', {});

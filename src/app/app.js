@@ -16,6 +16,9 @@ import {
   getOverrides,
   setOverride,
   getShipObs,
+  getHidden,
+  hideStore,
+  unhideStore,
 } from '../lib/storage.js';
 import { loadStoreRules } from '../lib/stores-data.js';
 import { storesFileUrl, issueUrl, STORES_PATH } from '../lib/config.js';
@@ -29,6 +32,7 @@ const state = {
   list: [],
   products: new Map(), // productId -> { product?, error?, fetchedAt? }
   overrides: {},
+  hidden: {}, // stores excluded from the comparison
   defaults: null, // data/stores.json (+ GitHub copy): shipping rules from the stores' own sites
   remoteAt: null,
   shipObs: {},
@@ -128,7 +132,7 @@ async function load({ force = false } = {}) {
     $('#refresh').disabled = false;
     state.list = await syncProductDetails(loadedProducts());
   }
-  [state.overrides, state.shipObs] = await Promise.all([getOverrides(), getShipObs()]);
+  [state.overrides, state.shipObs, state.hidden] = await Promise.all([getOverrides(), getShipObs(), getHidden()]);
   compute();
   // Products added while we were loading.
   if (productRefs(state.list).some((ref) => !state.products.has(ref.id))) load();
@@ -141,7 +145,12 @@ function compute() {
     qty: g.qty,
     options: g.options
       .filter((o) => productOf(o.id))
-      .map((o) => ({ productId: o.id, name: productOf(o.id).name, units: o.units, offers: productOf(o.id).offers })),
+      .map((o) => ({
+        productId: o.id,
+        name: productOf(o.id).name,
+        units: o.units,
+        offers: productOf(o.id).offers.filter((offer) => !state.hidden[offer.sellerId]),
+      })),
   }));
   state.result = optimize(state.items, { overrides: state.overrides, defaults: state.defaults, shipObs: state.shipObs });
   render();
@@ -395,6 +404,7 @@ function renderStores() {
         ${lines(store, allIds, { withTotals: false, withImages: true })}
         <footer class="actions">
           <button type="button" class="link edit" data-seller="${esc(store.sellerId)}">✎ ${t('fix_shipping')}</button>
+          <button type="button" class="link" data-hide="${esc(store.sellerId)}" data-name="${esc(store.storeName)}">${t('hide_store')}</button>
           <span class="spacer"></span>
           ${openAllButton(store, allIds)}
         </footer>
@@ -416,6 +426,7 @@ function knownStores() {
     known.set(id, { sellerId: id, storeName: name, storeSlug: '', shippingModel: model, rank: Infinity });
   };
   for (const [id, d] of Object.entries(state.defaults)) add(id, d.name);
+  for (const [id, h] of Object.entries(state.hidden)) add(id, h.name);
   for (const id of Object.keys(state.overrides)) add(id, `Store ${id}`);
   return [...known.values()].sort((a, b) => a.rank - b.rank || a.storeName.localeCompare(b.storeName));
 }
@@ -434,18 +445,22 @@ function renderRules() {
     if (m.freeAbove != null && m.estimated) return t('src_guessed');
     return t('src_kk');
   };
-  $('#rules').innerHTML = `<thead><tr><th>${t('col_store')}</th><th class="num">${t('col_shipping')}</th><th class="num">${t('col_free_from')}</th><th>${t('col_source')}</th><th></th></tr></thead>
+  $('#rules').innerHTML = `<thead><tr><th>${t('col_store')}</th><th class="num">${t('col_shipping')}</th><th class="num">${t('col_free_from')}</th><th>${t('col_source')}</th><th></th><th></th></tr></thead>
     <tbody>${shown
       .map((store) => {
         const m = store.shippingModel;
         const d = state.defaults[store.sellerId];
         const title = storeNotes(d) ? ` title="${esc(storeNotes(d))}"` : '';
-        return `<tr class="${store.rank < Infinity ? 'in-list' : ''}">
-          <td>${esc(store.storeName)}</td>
+        const hidden = Boolean(state.hidden[store.sellerId]);
+        return `<tr class="${store.rank < Infinity ? 'in-list' : ''} ${hidden ? 'hidden-store' : ''}">
+          <td>${esc(store.storeName)}${hidden ? ` <span class="tag">${t('hidden_tag')}</span>` : ''}</td>
           <td class="num">${m.base ? money(m.base) : `<span class="tag free">${t('ship_free')}</span>`}</td>
           <td class="num">${m.freeAbove == null ? `<span class="muted">${t('unknown')}</span>` : m.freeAbove === 0 ? t('always') : money(m.freeAbove)}</td>
           <td class="src"${title}>${basedOn(store)}</td>
           <td><button type="button" class="edit" data-seller="${esc(store.sellerId)}" title="${esc(t('edit_shipping'))}">✎</button></td>
+          <td>${hidden
+            ? `<button type="button" class="link small" data-unhide="${esc(store.sellerId)}">${t('unhide_store')}</button>`
+            : `<button type="button" class="link small" data-hide="${esc(store.sellerId)}" data-name="${esc(store.storeName)}">${t('hide_store')}</button>`}</td>
         </tr>`;
       })
       .join('')}</tbody>`;
@@ -466,6 +481,22 @@ function renderRules() {
   }
 }
 
+function renderHidden() {
+  const entries = Object.entries(state.hidden);
+  $('#hidden-section').hidden = !entries.length;
+  $('#hidden-list').innerHTML = entries
+    .map(([id, h]) => `<span class="chip">${esc(h.name)} <button type="button" class="link" data-unhide="${esc(id)}" title="${esc(t('unhide_store'))}">✕</button></span>`)
+    .join('');
+}
+
+document.addEventListener('click', async (event) => {
+  const hide = event.target.closest('button[data-hide]');
+  const unhide = event.target.closest('button[data-unhide]');
+  if (!hide && !unhide) return;
+  state.hidden = hide ? await hideStore(hide.dataset.hide, hide.dataset.name) : await unhideStore(unhide.dataset.unhide);
+  compute();
+});
+
 function render() {
   const fetched = [...state.products.values()].filter((e) => e.fetchedAt).map((e) => e.fetchedAt);
   if (!state.loading) {
@@ -483,6 +514,7 @@ function render() {
   renderList();
   renderStores();
   renderRules();
+  renderHidden();
 }
 
 // ---------- events ----------

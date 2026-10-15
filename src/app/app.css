@@ -845,3 +845,34 @@ main {
 .item.grouped .alts {
   margin-top: 0;
 }
+
+/* ---------- hidden stores ---------- */
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 6px 4px 12px;
+  border-radius: 999px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  font-size: 14px;
+}
+
+.chip button {
+  padding: 0 6px;
+}
+
+.rules tr.hidden-store td {
+  color: var(--muted);
+}
+
+button.link.small {
+  font-size: 13px;
+}
