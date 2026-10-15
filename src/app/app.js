@@ -22,7 +22,7 @@ import { storesFileUrl, issueUrl, STORES_PATH } from '../lib/config.js';
 import { esc, money, $ } from '../shared/dom.js';
 import { t, tn, setLang, getLang, applyStatic, DEFAULT_LANG } from '../shared/i18n.js';
 
-const STORES_SHOWN = 8;
+const STORES_SHOWN = 6;
 const RULES_SHOWN = 10;
 
 const state = {
@@ -380,23 +380,25 @@ function renderStores() {
   const shown = state.showAllStores ? r.stores : r.stores.slice(0, STORES_SHOWN);
   $('#stores').innerHTML = shown
     .map((store) => {
-      const cls = ['store', store.complete ? '' : 'partial', store === r.best ? 'best' : ''].join(' ');
-      const coverage = store.complete
-        ? t('coverage_all', { n })
-        : tn('coverage_partial', store.missing.length, { covered: store.covered, n, missing: store.missing.map((gid) => esc(itemLabel(groupOf(gid)))).join(', ') });
+      const cls = ['store-card', store.complete ? '' : 'partial', store === r.best ? 'best' : ''].join(' ');
       const ship = store.shipping.cost > 0 ? t('incl_shipping', { amount: money(store.shipping.cost) }) : t('free_shipping');
-      const note = store.complete ? ship : t('for_items', { items: tn('items', store.covered), ship });
-      return `<details class="${cls}" data-seller="${esc(store.sellerId)}">
-        <summary>
+      const coverage = t('coverage_count', { covered: store.covered, n });
+      return `<article class="${cls}" data-seller="${esc(store.sellerId)}">
+        <header>
           ${logo(store)}
-          <div><div class="name">${esc(store.storeName)}</div><div class="coverage">${coverage}</div></div>
-          <div class="total ${store.complete ? '' : 'muted'}">${money(store.total)}<span class="ship-note">${note}</span></div>
-        </summary>
-        <div class="store-body">
-          ${lines(store, allIds)}
-          <div class="actions">${openAllButton(store, allIds)}<a href="${esc(storeUrl(store.storeSlug))}" target="_blank" rel="noopener">${t('store_page')}</a></div>
-        </div>
-      </details>`;
+          <div class="store-head-text">
+            <div class="name">${storeName(store)}</div>
+            <div class="coverage">${coverage} · ${ship}</div>
+          </div>
+          <div class="total ${store.complete ? '' : 'muted'}">${money(store.total)}</div>
+        </header>
+        ${lines(store, allIds, { withTotals: false, withImages: true })}
+        <footer class="actions">
+          <button type="button" class="link edit" data-seller="${esc(store.sellerId)}">✎ ${t('fix_shipping')}</button>
+          <span class="spacer"></span>
+          ${openAllButton(store, allIds)}
+        </footer>
+      </article>`;
     })
     .join('');
   const more = r.stores.length - STORES_SHOWN;
