@@ -1,6 +1,6 @@
 {
   "name": "kombina",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "private": true,
   "type": "module",
   "description": "Kombina: browser extension that finds the store where a whole KuantoKusta shopping list is cheapest.",
@@ -10,10 +10,16 @@
     "lint": "web-ext lint",
     "start:firefox": "web-ext run",
     "start:chrome": "web-ext run --target chromium",
-    "build": "web-ext build --overwrite-dest",
-    "stale": "node scripts/stale-stores.mjs 90"
+    "build": "node scripts/build.mjs",
+    "stale": "node scripts/stale-stores.mjs 90",
+    "lint:firefox": "npm run build -- firefox && web-ext lint --no-config-discovery -s dist/firefox"
   },
   "devDependencies": {
     "web-ext": "^8.3.0"
+  },
+  "homepage": "https://github.com/pedrobarbosak/Kombina",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/pedrobarbosak/Kombina.git"
   }
 }

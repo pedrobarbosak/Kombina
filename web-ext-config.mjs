@@ -9,6 +9,8 @@ export default {
     'web-ext-config.mjs',
     'README.md',
     'web-ext-artifacts',
+    'dist',
+    'store',
     'node_modules',
   ],
   build: { overwriteDest: true },
