@@ -86,9 +86,11 @@ section {
 }
 
 .answer-card .lead {
-  margin: 0 0 22px;
-  font-size: 17px;
-  font-weight: 700;
+  margin: 0 0 20px;
+  font-size: 21px;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+  color: var(--primary);
 }
 
 .answer-card .lead.muted-lead {
@@ -98,6 +100,7 @@ section {
 .answer-card .lead.muted-lead {
   font-size: 15px;
   font-weight: 400;
+  letter-spacing: 0;
   color: var(--muted);
 }
 
@@ -1021,4 +1024,22 @@ button.link.small {
 
 #rules-updated {
   margin: 0 0 10px;
+}
+
+/* refresh buttons: spin the icon while loading */
+button.busy svg {
+  animation: spin 0.9s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  button.busy svg {
+    animation: none;
+    opacity: 0.5;
+  }
 }

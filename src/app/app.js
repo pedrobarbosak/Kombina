@@ -143,15 +143,14 @@ async function load({ force = false } = {}) {
   const refs = productRefs(state.list).filter((ref) => force || !state.products.get(ref.id)?.product);
   if (refs.length) {
     state.loading = true;
-    $('#refresh').disabled = true;
-    setStatus(t('status_checking', { n: tn('products', refs.length) }));
+    setBusy(true, t('status_checking', { n: tn('products', refs.length) }));
     const loaded = await loadProducts(refs, {
       force,
-      onProgress: (done, total) => setStatus(t('status_progress', { done, total })),
+      onProgress: (done, total) => setBusy(true, t('status_progress', { done, total })),
     });
     for (const [id, entry] of loaded) state.products.set(id, entry);
     state.loading = false;
-    $('#refresh').disabled = false;
+    setBusy(false);
     state.list = await syncProductDetails(loadedProducts());
   }
   [state.overrides, state.shipObs, state.hidden] = await Promise.all([getOverrides(), getShipObs(), getHidden()]);
@@ -180,10 +179,14 @@ function compute() {
 
 // ---------- rendering ----------
 
-// The status line only shows while prices are being fetched.
-function setStatus(text) {
-  $('#status').textContent = text;
-  $('#status').hidden = !text;
+// While prices load, the refresh buttons spin and say what's happening in their tooltip;
+// nothing is added to the layout, so the page doesn't move.
+function setBusy(busy, text = '') {
+  for (const button of [$('#refresh'), $('#rules-refresh')]) {
+    button.disabled = busy;
+    button.classList.toggle('busy', busy);
+    button.title = text;
+  }
 }
 
 function timeAgo(ts) {
@@ -550,7 +553,6 @@ $('#hide-dialog').addEventListener('close', async () => {
 
 function render() {
   const fetched = [...state.products.values()].filter((e) => e.fetchedAt).map((e) => e.fetchedAt);
-  if (!state.loading) setStatus('');
   $('#stores-section').hidden = !state.result?.stores.length;
   renderAnswer();
   renderList();
@@ -725,15 +727,7 @@ $('#refresh').addEventListener('click', () => load({ force: true }));
 
 // Same refresh, from the Lojas tab: store rules from GitHub (when configured) and the
 // shipping KuantoKusta shows on each offer of the products in the list.
-$('#rules-refresh').addEventListener('click', async () => {
-  const button = $('#rules-refresh');
-  const label = button.querySelector('span');
-  button.disabled = true;
-  label.textContent = t('rules_refreshing');
-  await load({ force: true });
-  button.disabled = false;
-  label.textContent = t('rules_refresh');
-});
+$('#rules-refresh').addEventListener('click', () => load({ force: true }));
 
 // While the page stays open, refresh now and then (only when the tab is visible).
 setInterval(() => {
