@@ -83,8 +83,33 @@ section {
 }
 
 .answer-card .lead {
-  margin: 0 0 14px;
+  margin: 0 0 12px;
+  font-size: 17px;
+  font-weight: 700;
+}
+
+.answer-card .lead.muted-lead {
+  font-size: 15px;
+  font-weight: 400;
   color: var(--muted);
+}
+
+.answer-card h2 a,
+.answer-card h3 a,
+.answer-card .lines td a {
+  color: var(--text);
+  text-decoration: none;
+}
+
+.answer-card h2 a:hover,
+.answer-card h3 a:hover,
+.answer-card .lines td a:hover {
+  text-decoration: underline;
+}
+
+.answer-card .lines a.open {
+  color: var(--primary);
+  text-decoration: underline;
 }
 
 .answer-card h2 {
@@ -291,11 +316,10 @@ section {
 
 .alts li {
   display: grid;
-  grid-template-columns: 36px 1fr auto auto auto;
+  grid-template-columns: 44px 1fr auto auto auto;
   gap: 12px;
   align-items: center;
   padding: 6px 0;
-  font-size: 14px;
 }
 
 .alts li.or {
@@ -317,10 +341,10 @@ section {
 }
 
 .alts img {
-  width: 36px;
-  height: 36px;
+  width: 44px;
+  height: 44px;
   object-fit: contain;
-  border-radius: 6px;
+  border-radius: 8px;
   background: #fff;
 }
 
@@ -329,7 +353,17 @@ section {
 }
 
 .alt-main a {
-  font-weight: 500;
+  font-weight: 600;
+  color: var(--text);
+  text-decoration: none;
+}
+
+.alt-main a:hover {
+  text-decoration: underline;
+}
+
+.alt-main .sub {
+  font-size: 13px;
 }
 
 .alt-main .sub {
@@ -543,7 +577,7 @@ dialog label {
   }
 
   .alts li {
-    grid-template-columns: 36px 1fr auto;
+    grid-template-columns: 44px 1fr auto;
   }
 
   .alts .units,
@@ -612,8 +646,8 @@ dialog label {
   margin: -4px 0 14px;
   padding: 8px 12px;
   border-radius: var(--radius-sm);
-  background: var(--primary-soft);
-  color: var(--primary);
+  background: var(--surface-2);
+  color: var(--text);
   font-size: 14px;
 }
 

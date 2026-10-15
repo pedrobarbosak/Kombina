@@ -31,7 +31,7 @@ const pt = {
   or: 'ou',
 
   // answer
-  best_lead: 'Loja mais barata para os teus {items}',
+  best_lead: 'A loja mais barata',
   detail_paid: '{subtotal} em produtos + portes {shipping}',
   detail_free: 'portes {shipping}',
   none_lead: 'Nenhuma loja tem os {n} artigos',
@@ -173,7 +173,7 @@ const en = {
   alternatives: '{n} alternative|{n} alternatives',
   or: 'or',
 
-  best_lead: 'Cheapest single store for your {items}',
+  best_lead: 'Cheapest store',
   detail_paid: '{subtotal} for products + shipping {shipping}',
   detail_free: 'shipping {shipping}',
   none_lead: 'No store sells all {n} items',

@@ -263,7 +263,7 @@ function renderAnswer() {
 
   if (r.best) {
     parts.push(`<div class="answer-card best">
-      <p class="lead">${t('best_lead', { items: tn('items', n) })}</p>
+      <p class="lead">${t('best_lead')}</p>
       <h2>${logo(r.best)}${storeName(r.best)}</h2>
       <div class="price-line"><span class="total">${money(r.best.total)}</span><span class="muted">${priceDetail(r.best)}</span></div>
       ${nudge(r.best)}
@@ -273,14 +273,14 @@ function renderAnswer() {
   } else if (r.stores.length) {
     const top = r.stores[0];
     parts.push(`<div class="answer-card">
-      <p class="lead">${t('none_lead', { n })}</p>
+      <p class="lead muted-lead">${t('none_lead', { n })}</p>
       <h2>${logo(top)}${t('none_title', { store: storeName(top), covered: top.covered, n })}</h2>
       <div class="price-line"><span class="total">${money(top.total)}</span><span class="muted">${t('none_detail', { covered: top.covered })}, ${priceDetail(top)}</span></div>
       ${lines(top, allIds, { withTotals: false, withImages: true })}
       <div class="actions">${openAllButton(top, allIds)}</div>
     </div>`);
   } else if (n) {
-    parts.push(`<div class="answer-card"><p class="lead">${t('no_offers')}</p></div>`);
+    parts.push(`<div class="answer-card"><p class="lead muted-lead">${t('no_offers')}</p></div>`);
   }
 
   if (splitWins) {
@@ -288,7 +288,7 @@ function renderAnswer() {
       ? `${t('split_lead_saves')} <span class="saves">${money(r.splitSaves)}</span>`
       : t('split_lead_best');
     parts.push(`<div class="answer-card ${r.best ? '' : 'best'}">
-      <p class="lead">${lead}</p>
+      <p class="lead muted-lead">${lead}</p>
       <div class="price-line"><span class="total">${money(split.total)}</span><span class="muted">${split.shipping > 0 ? t('split_detail', { shipping: money(split.shipping) }) : t('split_detail_free')}</span></div>
       ${split.parts
         .map(
