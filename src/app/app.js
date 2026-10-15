@@ -269,9 +269,8 @@ function nudge(store) {
 function openAllButton(store, gids) {
   const n = gids.filter((gid) => store.lines[gid]).length;
   if (!n) return '';
-  const what = n === 1 ? t('open_all_one') : t('open_all_n', { n });
   return `<button type="button" class="primary" data-open-all="${esc(store.sellerId)}" data-gids="${esc(gids.join(','))}" title="${esc(t('open_all_hint'))}">
-    ${t('open_all', { what, store: esc(store.storeName) })}</button>`;
+    ${t('open_all', { store: esc(store.storeName) })}</button>`;
 }
 
 // The line under the big total: products + shipping when shipping is paid, else just the shipping tag.

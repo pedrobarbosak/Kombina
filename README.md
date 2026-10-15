@@ -45,7 +45,7 @@ You can also paste product URLs on the page itself.
 
 **The KCompare page** opens when you click the toolbar icon. From top to bottom:
 - **The answer.** The cheapest single store for your whole list, with what you'd buy there
-  and the shipping. **Open all N at …** opens one tab per product on that store's site
+  and the shipping. **Comprar na …** (Buy at …) opens one tab per product on that store's site
   (through KuantoKusta's usual "Ver na loja" link), and each line has its own **Open**.
   If splitting between two stores is cheaper, or no store has everything, a second card
   shows the best 2-store split with the same buttons.
@@ -55,7 +55,7 @@ You can also paste product URLs on the page itself.
   when the item is a 2×500ml pack). The cheapest alternative is shown in green. If you added
   two versions as separate items, **This is an alternative of…** merges them.
 - **Every store.** All stores ranked by total for your list, 8 at a time. Open one to see
-  what you'd buy there, what's missing, and to **Open all** or correct its shipping (✎).
+  what you'd buy there, what's missing, and to **Comprar na …** or correct its shipping (✎).
 - **Lojas** (second tab, `#portes`): shipping rules per store, with a search box, and the hidden stores: every store's shipping cost and free-shipping
   threshold, with its source, editable in one place.
 
