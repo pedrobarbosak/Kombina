@@ -28,7 +28,7 @@ const pt = {
   stores: '{n} loja|{n} lojas',
   products: '{n} produto|{n} produtos',
   alternatives: '{n} alternativa|{n} alternativas',
-  alts_hint: 'qualquer uma serve; em cada loja conta a mais barata',
+  or: 'ou',
 
   // answer
   best_lead: 'Loja mais barata para os teus {items}',
@@ -173,7 +173,7 @@ const en = {
   stores: '{n} store|{n} stores',
   products: '{n} product|{n} products',
   alternatives: '{n} alternative|{n} alternatives',
-  alts_hint: 'any of them will do; the cheapest one counts at each store',
+  or: 'or',
 
   best_lead: 'Cheapest single store for your {items}',
   detail_paid: '{subtotal} for products + shipping {shipping}',

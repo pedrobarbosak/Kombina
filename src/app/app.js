@@ -339,8 +339,7 @@ function renderList() {
         <div>
           ${multi
             ? `<div class="title-row"><span class="name">${esc(itemLabel(g))}</span><button type="button" class="link rename" data-act="rename" title="${esc(t('rename'))}">✎</button></div>
-               <input class="label-input" data-act="label" value="${esc(g.label)}" placeholder="${esc(t('rename_placeholder'))}" hidden />
-               <div class="sub">${tn('alternatives', g.options.length)}: ${t('alts_hint')}</div>`
+               <input class="label-input" data-act="label" value="${esc(g.label)}" placeholder="${esc(t('rename_placeholder'))}" hidden />`
             : `<a class="name" href="${esc(productUrl(first))}" target="_blank" rel="noopener">${esc(first.name)}</a><div class="sub">${info(first)}</div>`}
         </div>
         <div class="controls">
@@ -365,7 +364,7 @@ function renderList() {
                 <button type="button" class="link" data-act="remove-option" title="${esc(t('remove_alt'))}">✕</button>
               </li>`;
             })
-            .join('')}</ul>`
+            .join(`<li class="or" aria-hidden="true"><span>${t('or')}</span></li>`)}</ul>`
         : '';
 
       const foot = `<div class="item-foot">
