@@ -84,6 +84,25 @@ function applyLang() {
   }
 }
 
+// ---------- theme ----------
+
+function applyTheme(theme) {
+  if (theme === 'light' || theme === 'dark') document.documentElement.dataset.theme = theme;
+  else delete document.documentElement.dataset.theme;
+  for (const button of document.querySelectorAll('.theme button')) {
+    button.setAttribute('aria-pressed', String(button.dataset.theme === (theme ?? 'auto')));
+  }
+}
+
+api.storage.local.get('theme').then(({ theme }) => applyTheme(theme ?? 'auto'));
+
+document.querySelector('.theme').addEventListener('click', async (event) => {
+  const button = event.target.closest('button[data-theme]');
+  if (!button) return;
+  applyTheme(button.dataset.theme);
+  await api.storage.local.set({ theme: button.dataset.theme });
+});
+
 // ---------- tabs ----------
 
 const TABS = { compare: '#comparar', rules: '#portes' };
@@ -159,8 +178,10 @@ function compute() {
 
 // ---------- rendering ----------
 
+// The status line only shows while prices are being fetched.
 function setStatus(text) {
   $('#status').textContent = text;
+  $('#status').hidden = !text;
 }
 
 function timeAgo(ts) {
@@ -508,16 +529,7 @@ document.addEventListener('click', async (event) => {
 
 function render() {
   const fetched = [...state.products.values()].filter((e) => e.fetchedAt).map((e) => e.fetchedAt);
-  if (!state.loading) {
-    setStatus(
-      !state.list.length
-        ? t('status_empty')
-        : t('status_prices', {
-            stores: tn('stores', state.result.stores.length),
-            checked: fetched.length ? t('status_checked', { ago: timeAgo(Math.min(...fetched)) }) : '',
-          }),
-    );
-  }
+  if (!state.loading) setStatus('');
   $('#stores-section').hidden = !state.result?.stores.length;
   renderAnswer();
   renderList();

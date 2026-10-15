@@ -6,8 +6,11 @@ main {
 
 h1 {
   margin: 0;
-  font-size: 24px;
+  font-size: 30px;
   letter-spacing: -0.01em;
+  display: flex;
+  align-items: center;
+  gap: 10px;
 }
 
 h2 {
@@ -722,6 +725,31 @@ dialog label {
   color: var(--text);
 }
 
+.theme {
+  display: inline-flex;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+}
+
+.theme button {
+  display: inline-flex;
+  align-items: center;
+  border: 0;
+  border-radius: 0;
+  padding: 8px 9px;
+  color: var(--muted);
+}
+
+.theme button + button {
+  border-left: 1px solid var(--border);
+}
+
+.theme button[aria-pressed='true'] {
+  background: var(--surface-2);
+  color: var(--text);
+}
+
 /* ---------- tabs ---------- */
 
 .tabs {
@@ -754,11 +782,9 @@ dialog label {
 }
 
 h1 .logo-img {
-  width: 28px;
-  height: 28px;
-  vertical-align: -5px;
-  margin-right: 8px;
-  border-radius: 7px;
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
 }
 
 /* ---------- two columns: list on the left, answer sticky on the right ---------- */

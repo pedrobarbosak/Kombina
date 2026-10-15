@@ -8,7 +8,11 @@ export const DEFAULT_LANG = 'pt';
 const pt = {
   // header
   loading: 'A carregar…',
-  refresh: 'Atualizar preços',
+  refresh: 'Atualizar',
+  theme_label: 'Tema',
+  theme_auto: 'Tema automático',
+  theme_light: 'Tema claro',
+  theme_dark: 'Tema escuro',
   status_empty: 'Adiciona produtos para encontrar a loja mais barata.',
   status_prices: 'Preços de {stores}{checked}.',
   status_checked: ', consultados {ago}',
@@ -161,7 +165,11 @@ const pt = {
 
 const en = {
   loading: 'Loading…',
-  refresh: 'Refresh prices',
+  refresh: 'Refresh',
+  theme_label: 'Theme',
+  theme_auto: 'Auto theme',
+  theme_light: 'Light theme',
+  theme_dark: 'Dark theme',
   status_empty: 'Add products to find the cheapest store.',
   status_prices: 'Prices from {stores}{checked}.',
   status_checked: ', checked {ago}',
