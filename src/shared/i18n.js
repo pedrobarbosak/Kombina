@@ -2,6 +2,8 @@
 // Strings with "|" hold singular|plural forms, picked by tn(); {name} placeholders are filled by t().
 // The content script has its own small copy (src/content/strings.js) because it can't import modules.
 
+import { setHTML } from './dom.js';
+
 export const LANGS = ['pt', 'en'];
 export const DEFAULT_LANG = 'pt';
 
@@ -361,7 +363,7 @@ export function tn(key, n, params = {}) {
 // Translates static markup: data-i18n (text), data-i18n-html, data-i18n-placeholder, data-i18n-title.
 export function applyStatic(root = document) {
   for (const el of root.querySelectorAll('[data-i18n]')) el.textContent = t(el.dataset.i18n);
-  for (const el of root.querySelectorAll('[data-i18n-html]')) el.innerHTML = t(el.dataset.i18nHtml);
+  for (const el of root.querySelectorAll('[data-i18n-html]')) setHTML(el, t(el.dataset.i18nHtml));
   for (const el of root.querySelectorAll('[data-i18n-placeholder]')) el.placeholder = t(el.dataset.i18nPlaceholder);
   for (const el of root.querySelectorAll('[data-i18n-title]')) el.title = t(el.dataset.i18nTitle);
 }

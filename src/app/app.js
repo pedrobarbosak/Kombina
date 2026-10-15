@@ -22,7 +22,7 @@ import {
 } from '../lib/storage.js';
 import { loadStoreRules } from '../lib/stores-data.js';
 import { storesFileUrl, issueUrl, STORES_PATH } from '../lib/config.js';
-import { esc, money, $ } from '../shared/dom.js';
+import { esc, money, $, setHTML } from '../shared/dom.js';
 import { t, tn, setLang, getLang, applyStatic, DEFAULT_LANG } from '../shared/i18n.js';
 
 const STORES_SHOWN = 6;
@@ -80,7 +80,7 @@ async function initLang() {
 
 function applyLang() {
   applyStatic();
-  $('#empty').innerHTML = t('empty_html', { add: t('btn_add') });
+  setHTML($('#empty'), t('empty_html', { add: t('btn_add') }));
   for (const button of document.querySelectorAll('.lang button')) {
     button.setAttribute('aria-pressed', String(button.dataset.lang === getLang()));
   }
@@ -345,7 +345,7 @@ function renderAnswer() {
     </div>`);
   }
 
-  $('#answer').innerHTML = parts.join('');
+  setHTML($('#answer'), parts.join(''));
   $('#answer').hidden = !parts.length;
 }
 
@@ -353,7 +353,7 @@ function renderList() {
   const r = state.result;
   $('#empty').hidden = state.list.length > 0;
   $('#clear').hidden = state.list.length === 0;
-  $('#items').innerHTML = state.list
+  setHTML($('#items'), state.list
     .map((g) => {
       const item = state.items.find((it) => it.id === g.gid);
       const multi = g.options.length > 1;
@@ -401,7 +401,7 @@ function renderList() {
 
       return `<div class="item grouped" data-gid="${esc(g.gid)}">${head}${alts}${foot}</div>`;
     })
-    .join('');
+    .join(''));
 }
 
 function renderStores() {
@@ -409,7 +409,7 @@ function renderStores() {
   const n = state.items.length;
   const allIds = state.items.map((it) => it.id);
   const shown = state.showAllStores ? r.stores : r.stores.slice(0, STORES_SHOWN);
-  $('#stores').innerHTML = shown
+  setHTML($('#stores'), shown
     .map((store) => {
       const cls = ['store-card', store.complete ? '' : 'partial', store === r.best ? 'best' : ''].join(' ');
       const ship = store.shipping.cost > 0 ? t('incl_shipping', { amount: money(store.shipping.cost) }) : t('free_shipping');
@@ -432,7 +432,7 @@ function renderStores() {
         </footer>
       </article>`;
     })
-    .join('');
+    .join(''));
   const more = r.stores.length - STORES_SHOWN;
   $('#show-all').hidden = more <= 0;
   $('#show-all').textContent = state.showAllStores ? t('show_fewer') : t('show_all_stores', { n: r.stores.length });
@@ -473,7 +473,7 @@ function renderRules() {
     if (m.freeAbove != null && m.estimated) return t('src_guessed');
     return t('src_kk');
   };
-  $('#rules').innerHTML = `<thead><tr><th>${t('col_store')}</th><th class="num">${t('col_shipping')}</th><th class="num">${t('col_free_from')}</th><th>${t('col_source')}</th><th></th><th></th></tr></thead>
+  setHTML($('#rules'), `<thead><tr><th>${t('col_store')}</th><th class="num">${t('col_shipping')}</th><th class="num">${t('col_free_from')}</th><th>${t('col_source')}</th><th></th><th></th></tr></thead>
     <tbody>${shown
       .map((store) => {
         const m = store.shippingModel;
@@ -491,7 +491,7 @@ function renderRules() {
             : `<button type="button" class="link small icon-btn" data-hide="${esc(store.sellerId)}" data-name="${esc(store.storeName)}">${ICON_HIDE} ${t('hide_store')}</button>`}</td>
         </tr>`;
       })
-      .join('')}${shown.length ? '' : `<tr><td colspan="6" class="muted">${t('rules_no_match')}</td></tr>`}</tbody>`;
+      .join('')}${shown.length ? '' : `<tr><td colspan="6" class="muted">${t('rules_no_match')}</td></tr>`}</tbody>`);
   const more = query ? 0 : rows.length - RULES_SHOWN;
   $('#show-all-rules').hidden = more <= 0;
   $('#show-all-rules').textContent = state.showAllRules ? t('show_fewer') : t('show_all_stores', { n: rows.length });
@@ -512,20 +512,20 @@ function renderRules() {
   $('#rules-data').hidden = !fileUrl;
   if (fileUrl) {
     const report = issueUrl(t('issue_title', { store: '…' }), '');
-    $('#rules-data').innerHTML = t('rules_data', {
+    setHTML($('#rules-data'), t('rules_data', {
       file: `<a href="${esc(fileUrl)}" target="_blank" rel="noopener">${esc(STORES_PATH)}</a>`,
       updated: state.remoteAt ? t('rules_updated', { date: formatDate(new Date(state.remoteAt).toISOString()) }) : '',
       report: `<a href="${esc(report)}" target="_blank" rel="noopener">${t('rules_report')}</a>`,
-    });
+    }));
   }
 }
 
 function renderHidden() {
   const entries = Object.entries(state.hidden);
   $('#hidden-empty').hidden = entries.length > 0;
-  $('#hidden-list').innerHTML = entries
+  setHTML($('#hidden-list'), entries
     .map(([id, h]) => `<span class="chip">${logo({ sellerId: id })}${esc(h.name)} <button type="button" class="link icon-btn" data-unhide="${esc(id)}" title="${esc(t('unhide_store'))}">${ICON_SHOW}</button></span>`)
-    .join('');
+    .join(''));
 }
 
 let hiding = null;
@@ -703,7 +703,7 @@ document.addEventListener('click', (event) => {
     t('issue_body', { store: store.storeName, id: editingSeller, shipping: money(m.base), freeAbove: m.freeAbove == null ? '—' : money(m.freeAbove) }),
   );
   $('#ship-report').hidden = !report;
-  if (report) $('#ship-report').innerHTML = `<a href="${esc(report)}" target="_blank" rel="noopener">${t('dlg_report')}</a>`;
+  if (report) setHTML($('#ship-report'), `<a href="${esc(report)}" target="_blank" rel="noopener">${t('dlg_report')}</a>`);
   $('#ship-dialog').showModal();
 });
 
