@@ -27,6 +27,8 @@ import { t, tn, setLang, getLang, applyStatic, DEFAULT_LANG } from '../shared/i1
 
 const STORES_SHOWN = 6;
 const RULES_SHOWN = 10;
+const STALE_DAYS = 90; // bundled store rules older than this get an "a verificar" tag
+const AUTO_REFRESH = 24 * 60 * 60 * 1000; // re-check once a day if the page stays open that long
 
 const state = {
   list: [],
@@ -461,7 +463,9 @@ function renderRules() {
     if (m.source === 'manual') return t('src_you');
     if (m.source === 'bundled' && d) {
       const link = d.source ? `<a href="${esc(d.source)}" target="_blank" rel="noopener">${t('src_site')}</a>` : t('src_bundled');
-      return `${link}${d.checked ? t('src_checked', { date: formatDate(d.checked) }) : ''}`;
+      const stale = d.checked && Date.now() - new Date(d.checked).getTime() > STALE_DAYS * 864e5;
+      const tag = stale ? ` <span class="tag maybe" title="${esc(t('stale_title'))}">${t('stale_tag')}</span>` : '';
+      return `${link}${d.checked ? t('src_checked', { date: formatDate(d.checked) }) : ''}${tag}`;
     }
     if (m.freeAbove != null && m.estimated) return t('src_guessed');
     return t('src_kk');
@@ -489,6 +493,17 @@ function renderRules() {
   $('#show-all-rules').hidden = more <= 0;
   $('#show-all-rules').textContent = state.showAllRules ? t('show_fewer') : t('show_all_stores', { n: rows.length });
   $('#rules-section').hidden = !all.length;
+
+  const fetched = [...state.products.values()].filter((e) => e.fetchedAt).map((e) => e.fetchedAt);
+  const newestCheck = Object.values(state.defaults).map((d) => d.checked).filter(Boolean).sort().pop();
+  $('#rules-updated').textContent = [
+    state.remoteAt
+      ? t('rules_updated_remote', { ago: timeAgo(state.remoteAt) })
+      : newestCheck
+        ? t('rules_updated_bundled', { date: formatDate(newestCheck) })
+        : '',
+    fetched.length ? t('rules_updated_kk', { ago: timeAgo(Math.min(...fetched)) }) : '',
+  ].filter(Boolean).join(' ');
 
   const fileUrl = storesFileUrl();
   $('#rules-data').hidden = !fileUrl;
@@ -707,6 +722,23 @@ $('#ship-dialog').addEventListener('close', async () => {
 });
 
 $('#refresh').addEventListener('click', () => load({ force: true }));
+
+// Same refresh, from the Lojas tab: store rules from GitHub (when configured) and the
+// shipping KuantoKusta shows on each offer of the products in the list.
+$('#rules-refresh').addEventListener('click', async () => {
+  const button = $('#rules-refresh');
+  const label = button.querySelector('span');
+  button.disabled = true;
+  label.textContent = t('rules_refreshing');
+  await load({ force: true });
+  button.disabled = false;
+  label.textContent = t('rules_refresh');
+});
+
+// While the page stays open, refresh now and then (only when the tab is visible).
+setInterval(() => {
+  if (document.visibilityState === 'visible' && !state.loading) load({ force: true });
+}, AUTO_REFRESH);
 
 $('#grant').addEventListener('click', async () => {
   if (await requestSiteAccess()) load({ force: true });

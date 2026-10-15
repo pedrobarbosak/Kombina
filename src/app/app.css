@@ -1010,3 +1010,11 @@ button.link.small {
 #hidden-section + #rules-section {
   margin-top: 32px;
 }
+
+#rules-section .section-head {
+  align-items: center;
+}
+
+#rules-updated {
+  margin: 0 0 10px;
+}
