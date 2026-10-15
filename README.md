@@ -1,143 +1,117 @@
 # Kombina
 
-Browser extension (Firefox and Chrome) for buying several products at once on
-[kuantokusta.pt](https://www.kuantokusta.pt). Add the products you want to a list and it
-finds the **single store with the lowest total, shipping included**. If no store has every
-product, it shows the **cheapest 2-store split** instead.
+A Firefox and Chrome extension for [kuantokusta.pt](https://www.kuantokusta.pt) that takes the
+list of products you want to buy and tells you which single store sells the whole list for
+the least money, shipping included.
 
-Each item on the list can have **alternatives**: products that do the same job, like a
-refill vs the full bottle, or a 2-pack vs 2 singles. For each store, the extension picks
-whichever alternative is cheapest there.
+![Kombina: the list on the left, the cheapest store on the right](docs/screenshots/compare.png)
+
+## Features
+
+- Add products to your list straight from any kuantokusta.pt product page, or by pasting
+  their links.
+- See the cheapest store for the whole list, with each product's price, the shipping, and
+  how much more you'd need to add for free shipping.
+- When no store has everything, or when splitting is cheaper, get the best split between
+  two stores and how much it saves.
+- Give an item alternatives (a refill or the full bottle, a 2-pack or two singles): each
+  store is priced with whichever alternative is cheapest there.
+- Open every product at the chosen store in one click, through KuantoKusta's own
+  "Ver na loja" links.
+- Hide stores you never want to buy from, and correct any store's shipping cost or
+  free-shipping threshold.
+- Portuguese (Portugal) by default, with an English switch; light and dark themes.
 
 ## Install
 
-### Firefox (121+)
+Kombina isn't on the browser stores yet, so it's loaded from this folder. First clone the
+repository, or download it as a ZIP from GitHub and unzip it.
+
+**Firefox (121 or newer)**
+
 1. Open `about:debugging#/runtime/this-firefox`.
-2. Click **Load Temporary Add-on…** and select `manifest.json` in this folder.
-3. Click the Kombina toolbar icon. If the page says *"needs access to kuantokusta.pt"*,
-   click **Allow access**. You can also do it in `about:addons` → Kombina → Permissions.
+2. Click **Load Temporary Add-on…** and choose `manifest.json` in the folder.
+3. Click the Kombina icon in the toolbar. If the page asks for access to kuantokusta.pt,
+   click **Permitir**.
 
-A temporary add-on is removed when Firefox restarts. For a permanent install, sign it as an
-unlisted add-on on [addons.mozilla.org](https://addons.mozilla.org/developers/) (`npm run
-build` creates the zip), or use Firefox Developer Edition with `xpinstall.signatures.required`
-set to `false`.
+Firefox removes temporary add-ons when it restarts. To keep it installed, sign it as an
+unlisted add-on on [addons.mozilla.org](https://addons.mozilla.org/developers/)
+(`npm run build` creates the zip).
 
-### Chrome / Edge / Brave
+**Chrome, Edge, Brave**
+
 1. Open `chrome://extensions` and turn on **Developer mode**.
-2. Click **Load unpacked** and select this folder.
+2. Click **Load unpacked** and choose the folder.
 
-## Use
+## How to use it
 
-The interface is in European Portuguese by default; the PT/EN switch at the top of the page
-changes it everywhere, including the button on kuantokusta.pt. Translations live in
-`src/shared/i18n.js` (page) and `src/content/strings.js` (button); the extension name and
-description are in `_locales/`.
+1. Open a product on kuantokusta.pt and click **+ Adicionar ao Kombina** (bottom right).
+   The ▾ menu next to it adds the product as an alternative to something already on the
+   list.
 
-**Add products.** On any kuantokusta.pt product page, use the floating button
-(bottom-right):
-- **+ Add to Kombina** adds the product as a new item.
-- **▾ → Add as an alternative to…** adds it as an alternative to an item already on the
-  list (e.g. while viewing the refill, pick the full bottle you added earlier).
-- **▾ → Open Kombina** opens the list page. Once a product is on the list, the main
-  button opens the page too.
+   ![The Kombina button and menu on a kuantokusta.pt product page](docs/screenshots/button.png)
 
-You can also paste product URLs on the page itself.
+2. Click the Kombina icon in the toolbar to open your list. The right column shows the
+   cheapest store; **Comprar na …** opens all the products there, one tab each.
+3. Use the steppers to change quantities, and **+ Adicionar alternativa** to add a product
+   that could replace one on the list.
 
-**The Kombina page** opens when you click the toolbar icon. From top to bottom:
-- **The answer.** The cheapest single store for your whole list, with what you'd buy there
-  and the shipping. **Comprar na …** (Buy at …) opens one tab per product on that store's site
-  (through KuantoKusta's usual "Ver na loja" link), and each line has its own **Open**.
-  If splitting between two stores is cheaper, or no store has everything, a second card
-  shows the best 2-store split with the same buttons.
-- **Your list.** One card per item, with its quantity. An item can have **alternatives**:
-  press **+ Add an alternative** and paste the link of a product that could replace it.
-  **per item** is how many of that product make one item (e.g. `2` for a 500ml single
-  when the item is a 2×500ml pack). The cheapest alternative is shown in green. If you added
-  two versions as separate items, **This is an alternative of…** merges them.
-- **Every store.** All stores ranked by total for your list, 8 at a time. Open one to see
-  what you'd buy there, what's missing, and to **Comprar na …** or correct its shipping (✎).
-- **Lojas** (second tab, `#portes`): shipping rules per store, with a search box, and the hidden stores: every store's shipping cost and free-shipping
-  threshold, with its source, editable in one place.
+## Shipping data
 
-### Shipping and free-shipping thresholds
-KuantoKusta only shows the shipping cost per offer; it never says from what order value a
-store ships free. The extension combines three sources, in this order:
-1. **Your values.** Click ✎ next to any store (in the answer, a store row, or the
-   **Shipping rules** table at the bottom) to set its shipping cost and/or free-shipping
-   threshold. Saved per store, reused for every list, tagged *you*. **Reset** removes them.
-2. **The stores' own sites.** `data/stores.json` holds the shipping cost and threshold
-   for the pharmacies that appear most on KuantoKusta, with a source link and the date it was
-   checked. Stores change their rules, so re-check now and then
-   (`node scripts/merge-stores.mjs new-research.json` merges updated data).
-3. **What the offers reveal.** KuantoKusta shows 0 € shipping on products above a store's
-   threshold. When a store charges on a cheap product but not on a pricier one, the extension
-   guesses the threshold (*guessed from their offers*; *may be free* when your subtotal falls
-   in the uncertain range). Observations are kept for 30 days across everything you compare.
+KuantoKusta shows the shipping cost of each offer but never the order value from which a
+store ships free, which often decides the cheapest store. Kombina combines, in this order:
 
-When the winning store's shipping could become free, the answer says how much more you'd
-need to add. When the threshold is unknown, it asks you to set it.
+1. **Your corrections**, made with ✎ on any store.
+2. **[`data/stores.json`](data/stores.json)**: the shipping cost and free-shipping threshold
+   of the pharmacies that appear most on KuantoKusta, read from each store's own site, with
+   the source page and the date it was checked.
+3. **What the offers reveal**: a store that charges shipping on a cheap product but not on
+   a pricier one has its threshold somewhere in between.
 
-### Keeping the shipping data fresh
-- **In the extension:** the **Atualizar portes** button on the Lojas tab (and **Atualizar** in
-  the header) re-reads the store rules from GitHub, when configured, and re-checks the
-  shipping KuantoKusta shows on every product in the list. The page also does this on its own
-  once a day (the GitHub copy is fetched at most once a day, whenever the page opens). Rules checked more
-  than 90 days ago are tagged *a verificar*.
-- **In the repository:** `npm run stale` lists the stores to re-check, and
-  `.github/workflows/stale-stores.yml` runs it on the 1st of every month, opening (or updating)
-  a "Re-check shipping data" issue with the list.
+![The Lojas tab: shipping rules per store, with their source](docs/screenshots/stores.png)
 
-### Correcting the shipping data
-`data/stores.json` is meant to be maintained in the open. Each entry is keyed by the
-KuantoKusta `sellerId` and has `shipping` (standard cost to mainland Portugal), `freeAbove`
-(order value from which shipping is free, `null` if none), `notes` / `notes_en`, `source`
-(the store page that states it), `checked` (date) and `confidence`. To fix a value, edit the
-file and open a pull request, or open an issue from the **Lojas** tab (the ✎
-dialog has a *Suggest a correction* link that prefills it). Once `GITHUB_REPO` is set in
-`src/lib/config.js`, installed extensions pick up changes within a day without an update.
-
-Prices are cached for 15 minutes. Click **↻ Refresh prices** to fetch them again.
+Store rules change. If one is wrong, edit `data/stores.json` and open a pull request, or open
+an issue with the store page that shows the right value. Rules not checked for 90 days are
+tagged *a verificar* in the extension, and a monthly GitHub Action
+([`stale-stores.yml`](.github/workflows/stale-stores.yml)) opens an issue listing them.
+Support for islands, pickup points and in-store pickup is planned in
+[`docs/portes-de-envio.md`](docs/portes-de-envio.md).
 
 ## Development
 
-```
-npm install          # installs web-ext (only needed for lint/run/build)
-npm test             # unit tests for the parser and optimizer (node --test)
-npm run lint         # web-ext lint
-npm run start:firefox
-npm run start:chrome
-npm run build        # zip in web-ext-artifacts/
-```
+There's no build step: the extension runs from the source files as they are.
 
-No build step: the files load directly as written.
+```bash
+npm install            # web-ext, for lint/run/build
+npm test               # unit tests for the page parser and the optimizer
+npm run lint           # web-ext lint
+npm run start:firefox  # a temporary Firefox profile with the extension loaded
+npm run start:chrome
+npm run build          # zip in web-ext-artifacts/
+npm run stale          # stores whose shipping rules are older than 90 days
+```
 
 | Path | What it does |
 | --- | --- |
-| `src/lib/kk.js` | Everything tied to KuantoKusta's page structure (reads `__NEXT_DATA__` from product pages). If the site changes, fix it here. |
-| `src/lib/optimize.js` | Pure functions: shipping estimate, best alternative per store, single-store ranking, 2-store splits. |
-| `data/stores.json` | Shipping cost and free-shipping threshold per store, from the stores' own sites. Public and editable; `scripts/merge-stores.mjs` merges new research. Set `GITHUB_REPO` in `src/lib/config.js` and the page refreshes it from GitHub daily. |
-| `src/lib/storage.js` | The list (items → alternatives), shipping overrides, shipping observations, cache. Migrates the v0.1 list automatically. |
-| `src/lib/products.js` | Fetches offers (3 at a time) using the 15-min cache. |
-| `src/background.js` | Opens or focuses the page from the toolbar icon. Applies list changes sent by the content script. |
-| `src/content/` | Floating button and menu on product pages. Watches URL changes, because the site switches pages without reloading. |
-| `src/app/` | The Kombina page (list + results). |
-
-### Hiding stores
-**Ocultar loja** on a store card (or in the shipping table) leaves that store out of the
-comparison. Hidden stores are listed in the **Lojas** tab, where they can be
-shown again.
-
-## Roadmap
-- **Delivery method** (see [docs/portes-de-envio.md](docs/portes-de-envio.md)). Stores charge differently for mainland Portugal, the islands, pickup
-  points and in-store pickup. `data/stores.json` only holds the standard mainland home
-  delivery today; the plan is to record the other options per store and add a picker so the
-  comparison uses the one you prefer.
+| `src/lib/kk.js` | Everything that depends on KuantoKusta's page structure (it reads `__NEXT_DATA__` from product pages). If the site changes, the fix goes here. |
+| `src/lib/optimize.js` | Pure functions: shipping rules, best alternative per store, store ranking, 2-store splits. |
+| `src/lib/storage.js` | The list, shipping corrections, hidden stores, and cached offers. |
+| `src/app/` | The Kombina page. |
+| `src/content/` | The button and menu on kuantokusta.pt product pages. |
+| `src/shared/i18n.js` | Portuguese and English strings for the page (`src/content/strings.js` for the button). |
+| `data/stores.json` | Shipping rules per store. Set `GITHUB_REPO` in `src/lib/config.js` and installed copies refresh it from GitHub once a day. |
 
 ## Limits
-- KuantoKusta uses Akamai bot protection. Requests only work from a normal browser
-  session, which is why this is an extension and not a script (`curl` and headless browsers
-  get `403 Access Denied`).
-- Shipping is KuantoKusta's *minimum* shipping. Real costs can depend on weight, region
-  (islands) or payment method, so check the store's checkout before buying.
-- The 2-store split gives each item to whichever of the two stores is cheaper for it. It
-  doesn't move items between stores to reach a free-shipping threshold.
+
+- It only works in a normal browser session: KuantoKusta's bot protection blocks scripts and
+  headless browsers, which is why this is an extension.
+- Shipping is for standard home delivery to mainland Portugal. Weight, islands and payment
+  method can change it, so check the total at the store's checkout.
+- The 2-store split gives each product to whichever of the two stores is cheaper for it; it
+  doesn't move products around to reach a free-shipping threshold.
+
+Kombina is an independent project, not affiliated with KuantoKusta or any of the stores.
+
+## License
+
+[MIT](LICENSE)
