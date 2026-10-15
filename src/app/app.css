@@ -110,9 +110,15 @@ section {
   text-decoration: underline;
 }
 
-.answer-card .lines a.open {
+.answer-card .lines a.open,
+.store-card .lines a.open {
+  color: var(--muted);
+  text-decoration: none;
+}
+
+.answer-card .lines a.open:hover,
+.store-card .lines a.open:hover {
   color: var(--primary);
-  text-decoration: underline;
 }
 
 .answer-card h2 {
@@ -482,10 +488,7 @@ section {
   text-decoration: underline;
 }
 
-.store-card .lines a.open {
-  color: var(--primary);
-  text-decoration: underline;
-}
+
 
 .store-card footer {
   margin-top: 10px;
@@ -539,8 +542,15 @@ section {
 }
 
 .open {
-  font-size: 13px;
-  padding: 4px 10px;
+  display: inline-flex;
+  padding: 4px;
+  border-radius: 6px;
+  color: var(--muted);
+}
+
+.open:hover {
+  color: var(--primary);
+  background: var(--surface-2);
 }
 
 dialog {
