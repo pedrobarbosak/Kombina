@@ -223,7 +223,7 @@ function nudge(store) {
   const m = store.shippingModel;
   if (store.shipping.cost === 0) return '';
   if (m.freeAbove != null && store.subtotal < m.freeAbove) {
-    return `<p class="nudge">${t('nudge_add', { amount: money(m.freeAbove - store.subtotal), store: esc(store.storeName), maybe: m.estimated ? t('nudge_maybe') : '' })}</p>`;
+    return `<p class="nudge free">${t('nudge_add', { amount: money(m.freeAbove - store.subtotal), maybe: m.estimated ? t('nudge_maybe') : '' })}</p>`;
   }
   if (m.freeAbove == null && m.source !== 'manual') {
     return `<p class="nudge ask">${t('nudge_ask', { store: esc(store.storeName) })} <button type="button" class="edit" data-seller="${esc(store.sellerId)}">${t('nudge_set')}</button> ${t('nudge_tail')} <a href="#portes">${t('tab_rules')} →</a></p>`;

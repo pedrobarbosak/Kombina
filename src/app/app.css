@@ -651,6 +651,12 @@ dialog label {
   font-size: 14px;
 }
 
+.nudge.free {
+  background: var(--good-soft);
+  color: var(--good);
+  font-weight: 600;
+}
+
 .nudge.ask {
   background: var(--surface-2);
   color: var(--muted);
