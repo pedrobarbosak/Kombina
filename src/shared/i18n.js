@@ -1,4 +1,4 @@
-// Translations for the KCompare page. European Portuguese is the default.
+// Translations for the Kombina page. European Portuguese is the default.
 // Strings with "|" hold singular|plural forms, picked by tn(); {name} placeholders are filled by t().
 // The content script has its own small copy (src/content/strings.js) because it can't import modules.
 
@@ -20,12 +20,12 @@ const pt = {
   status_progress: 'A consultar preços… {done} de {total}',
   ago_now: 'agora mesmo',
   ago_minutes: 'há {n} minuto|há {n} minutos',
-  access_text: 'O KCompare precisa de permissão para ler os preços no kuantokusta.pt.',
+  access_text: 'O Kombina precisa de permissão para ler os preços no kuantokusta.pt.',
   access_allow: 'Permitir',
   lang_label: 'Idioma',
   tab_compare: 'Comparar',
   tab_rules: 'Lojas',
-  btn_add: 'Adicionar ao KCompare',
+  btn_add: 'Adicionar ao Kombina',
 
   // plurals
   items: '{n} artigo|{n} artigos',
@@ -134,7 +134,7 @@ const pt = {
   col_source: 'Fonte',
   src_you: 'definido por ti',
   src_site: 'site da loja',
-  src_bundled: 'dados do KCompare',
+  src_bundled: 'dados do Kombina',
   src_checked: ', verificado em {date}',
   src_guessed: 'estimado pelas ofertas',
   src_kk: 'KuantoKusta',
@@ -182,12 +182,12 @@ const en = {
   status_progress: 'Checking prices… {done} of {total}',
   ago_now: 'just now',
   ago_minutes: '{n} minute ago|{n} minutes ago',
-  access_text: 'KCompare needs permission to read prices from kuantokusta.pt.',
+  access_text: 'Kombina needs permission to read prices from kuantokusta.pt.',
   access_allow: 'Allow',
   lang_label: 'Language',
   tab_compare: 'Compare',
   tab_rules: 'Stores',
-  btn_add: 'Add to KCompare',
+  btn_add: 'Add to Kombina',
 
   items: '{n} item|{n} items',
   stores: '{n} store|{n} stores',
@@ -290,7 +290,7 @@ const en = {
   col_source: 'Based on',
   src_you: 'you',
   src_site: 'their site',
-  src_bundled: 'KCompare data',
+  src_bundled: 'Kombina data',
   src_checked: ', checked {date}',
   src_guessed: 'guessed from their offers',
   src_kk: 'KuantoKusta',

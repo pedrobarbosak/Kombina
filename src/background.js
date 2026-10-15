@@ -1,4 +1,4 @@
-// Opens the KCompare page from the toolbar icon, and handles list changes requested
+// Opens the Kombina page from the toolbar icon, and handles list changes requested
 // by the product-page button (content scripts can't import the storage module).
 import { api } from './lib/api.js';
 import { addItem, addAlternative, getList } from './lib/storage.js';
@@ -8,7 +8,7 @@ getList();
 
 const PAGE_URL = api.runtime.getURL('src/app/app.html');
 
-// Focuses the existing KCompare tab if there is one, otherwise opens a new one.
+// Focuses the existing Kombina tab if there is one, otherwise opens a new one.
 async function openPage() {
   const { pageTabId } = await api.storage.session.get('pageTabId');
   if (pageTabId != null) {

@@ -1,4 +1,4 @@
-// Content script for kuantokusta.pt. Adds an "Add to KCompare" button on product pages,
+// Content script for kuantokusta.pt. Adds an "Add to Kombina" button on product pages,
 // with a menu to add the product as an alternative to an item already in the list.
 // Classic script (content scripts can't use ES module imports): it reads the list from
 // storage directly and sends changes to the background script. Strings come from strings.js.
