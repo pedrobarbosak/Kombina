@@ -1006,3 +1006,7 @@ button.link.small {
   padding: 5px 12px;
   font-size: 14px;
 }
+
+#hidden-section + #rules-section {
+  margin-top: 32px;
+}

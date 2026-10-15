@@ -504,7 +504,7 @@ function renderRules() {
 
 function renderHidden() {
   const entries = Object.entries(state.hidden);
-  $('#hidden-section').hidden = !entries.length;
+  $('#hidden-empty').hidden = entries.length > 0;
   $('#hidden-list').innerHTML = entries
     .map(([id, h]) => `<span class="chip">${logo({ sellerId: id })}${esc(h.name)} <button type="button" class="link icon-btn" data-unhide="${esc(id)}" title="${esc(t('unhide_store'))}">${ICON_SHOW}</button></span>`)
     .join('');
