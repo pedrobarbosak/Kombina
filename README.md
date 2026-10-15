@@ -118,7 +118,7 @@ comparison. Hidden stores are listed in the **Lojas** tab, where they can be
 shown again.
 
 ## Roadmap
-- **Delivery method.** Stores charge differently for mainland Portugal, the islands, pickup
+- **Delivery method** (see [docs/portes-de-envio.md](docs/portes-de-envio.md)). Stores charge differently for mainland Portugal, the islands, pickup
   points and in-store pickup. `data/stores.json` only holds the standard mainland home
   delivery today; the plan is to record the other options per store and add a picker so the
   comparison uses the one you prefer.
