@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="pt-PT">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>KuantoKompare</title>
+    <link rel="icon" href="../../icons/icon-32.png" />
+    <link rel="stylesheet" href="../shared/theme.css" />
+    <link rel="stylesheet" href="app.css" />
+  </head>
+  <body>
+    <main>
+      <header class="top">
+        <div>
+          <h1><img class="logo-img" src="../../icons/icon-48.png" alt="" />KuantoKompare</h1>
+          <p id="status" class="muted" data-i18n="loading">A carregar…</p>
+        </div>
+        <div class="top-actions">
+          <div class="lang" role="group" data-i18n-title="lang_label">
+            <button type="button" data-lang="pt" aria-label="Português">
+              <svg viewBox="0 0 20 14" aria-hidden="true"><rect width="8" height="14" fill="#046a38"/><rect x="8" width="12" height="14" fill="#da291c"/><circle cx="8" cy="7" r="3" fill="#ffe900"/></svg>PT
+            </button>
+            <button type="button" data-lang="en" aria-label="English">
+              <svg viewBox="0 0 20 14" aria-hidden="true"><rect width="20" height="14" fill="#012169"/><path d="M0 0L20 14M20 0L0 14" stroke="#fff" stroke-width="3"/><path d="M0 0L20 14M20 0L0 14" stroke="#c8102e" stroke-width="1.2"/><path d="M10 0V14M0 7H20" stroke="#fff" stroke-width="4"/><path d="M10 0V14M0 7H20" stroke="#c8102e" stroke-width="2"/></svg>EN
+            </button>
+          </div>
+          <button id="refresh" type="button" data-i18n="refresh">Atualizar preços</button>
+        </div>
+      </header>
+
+      <div id="access" class="notice" hidden>
+        <span data-i18n="access_text"></span>
+        <button id="grant" type="button" class="primary" data-i18n="access_allow"></button>
+      </div>
+
+      <nav class="tabs">
+        <a href="#comparar" data-tab="compare" data-i18n="tab_compare"></a>
+        <a href="#portes" data-tab="rules" data-i18n="tab_rules"></a>
+      </nav>
+
+      <div id="tab-compare" class="tab-panel compare-grid">
+      <div class="col-main">
+      <section class="list-section">
+        <div class="section-head">
+          <h2 data-i18n="list_title"></h2>
+          <button id="clear" type="button" class="link" data-i18n="clear" hidden></button>
+        </div>
+        <form id="add-form" class="add-form">
+          <input id="add-input" type="url" data-i18n-placeholder="add_placeholder" autocomplete="off" />
+          <button type="submit" class="primary" data-i18n="add"></button>
+        </form>
+        <p id="add-error" class="error small" hidden></p>
+        <p id="empty" class="empty" hidden></p>
+        <div id="items"></div>
+      </section>
+
+      <section id="stores-section" hidden>
+        <h2 data-i18n="stores_title"></h2>
+        <p class="muted" data-i18n="stores_intro"></p>
+        <div id="stores"></div>
+        <button id="show-all" type="button" hidden></button>
+      </section>
+      </div>
+      <aside class="col-side">
+        <section id="answer" class="answer" hidden></section>
+      </aside>
+      </div>
+
+      <div id="tab-rules" class="tab-panel" hidden>
+      <section id="rules-section" hidden>
+        <h2 data-i18n="rules_title"></h2>
+        <p class="muted" data-i18n="rules_intro"></p>
+        <div class="table-wrap"><table id="rules" class="rules"></table></div>
+        <button id="show-all-rules" type="button" hidden></button>
+        <p id="rules-data" class="muted small" hidden></p>
+      </section>
+      </div>
+    </main>
+
+    <dialog id="ship-dialog">
+      <form method="dialog" id="ship-form">
+        <h3 id="ship-title"></h3>
+        <p id="ship-info" class="muted small"></p>
+        <label><span data-i18n="dlg_cost"></span>
+          <input name="shipping" type="number" min="0" step="0.01" data-i18n-placeholder="dlg_cost_placeholder" />
+        </label>
+        <label><span data-i18n="dlg_free"></span>
+          <input name="freeAbove" type="number" min="0" step="0.01" data-i18n-placeholder="dlg_free_placeholder" />
+        </label>
+        <p id="ship-report" class="small" hidden></p>
+        <div class="dialog-actions">
+          <button value="reset" type="submit" class="link" data-i18n="dlg_reset"></button>
+          <span></span>
+          <button value="cancel" type="submit" data-i18n="dlg_cancel"></button>
+          <button value="save" type="submit" class="primary" data-i18n="dlg_save"></button>
+        </div>
+      </form>
+    </dialog>
+
+    <script type="module" src="app.js"></script>
+  </body>
+</html>

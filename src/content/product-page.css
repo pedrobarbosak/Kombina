@@ -1,0 +1,116 @@
+#easy-compare-root {
+  position: fixed;
+  right: 20px;
+  bottom: 20px;
+  z-index: 2147483000;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 8px;
+  font: 600 14px/1.2 system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+}
+
+#easy-compare-root [hidden] {
+  display: none !important;
+}
+
+#easy-compare-root button {
+  font: inherit;
+  cursor: pointer;
+}
+
+#easy-compare-root .ec-bar {
+  display: flex;
+  border-radius: 999px;
+  overflow: hidden;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
+}
+
+#easy-compare-root .ec-main,
+#easy-compare-root .ec-toggle {
+  appearance: none;
+  border: 0;
+  background: #d9772b;
+  color: #fff;
+  padding: 12px 16px;
+}
+
+#easy-compare-root .ec-toggle {
+  padding: 12px 14px;
+  border-left: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+#easy-compare-root .ec-main:hover,
+#easy-compare-root .ec-toggle:hover {
+  background: #b8611f;
+}
+
+#easy-compare-root.ec-in-list .ec-main,
+#easy-compare-root.ec-in-list .ec-toggle {
+  background: #a0521a;
+}
+
+#easy-compare-root .ec-menu {
+  display: flex;
+  flex-direction: column;
+  min-width: 260px;
+  max-width: 360px;
+  max-height: 60vh;
+  overflow-y: auto;
+  padding: 6px;
+  border-radius: 12px;
+  background: #fff;
+  color: #0f172a;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+}
+
+#easy-compare-root .ec-menu button {
+  appearance: none;
+  border: 0;
+  background: none;
+  color: inherit;
+  text-align: left;
+  padding: 8px 10px;
+  border-radius: 8px;
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+#easy-compare-root .ec-menu button:hover {
+  background: #f1f5f9;
+}
+
+#easy-compare-root .ec-menu .ec-alt {
+  padding-left: 20px;
+}
+
+#easy-compare-root .ec-menu-title {
+  padding: 8px 10px 4px;
+  color: #64748b;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+#easy-compare-root .ec-menu hr {
+  width: 100%;
+  border: 0;
+  border-top: 1px solid #e2e8f0;
+  margin: 4px 0;
+}
+
+#easy-compare-root .ec-hint {
+  display: none;
+  max-width: 320px;
+  padding: 8px 12px;
+  border-radius: 8px;
+  background: rgba(17, 24, 39, 0.92);
+  color: #fff;
+  font-weight: 500;
+  font-size: 12px;
+}
+
+#easy-compare-root.ec-flash .ec-hint {
+  display: block;
+}
