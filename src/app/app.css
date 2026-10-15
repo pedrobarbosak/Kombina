@@ -86,9 +86,13 @@ section {
 }
 
 .answer-card .lead {
-  margin: 0 0 12px;
+  margin: 0 0 22px;
   font-size: 17px;
   font-weight: 700;
+}
+
+.answer-card .lead.muted-lead {
+  margin-bottom: 14px;
 }
 
 .answer-card .lead.muted-lead {

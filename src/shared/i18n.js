@@ -35,7 +35,7 @@ const pt = {
   or: 'ou',
 
   // answer
-  best_lead: 'A loja mais barata',
+  best_lead: 'Melhor preço',
   detail_paid: '{subtotal} em produtos + portes {shipping}',
   detail_free: '{shipping}',
   ship_free_word: 'portes grátis',
@@ -202,7 +202,7 @@ const en = {
   alternatives: '{n} alternative|{n} alternatives',
   or: 'or',
 
-  best_lead: 'Cheapest store',
+  best_lead: 'Best price',
   detail_paid: '{subtotal} for products + shipping {shipping}',
   detail_free: '{shipping}',
   ship_free_word: 'free shipping',
