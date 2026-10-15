@@ -10,7 +10,6 @@ import {
   removeItem,
   updateOption,
   removeOption,
-  mergeItems,
   findProduct,
   clearList,
   syncProductDetails,
@@ -180,14 +179,12 @@ function lines(store, gids, { withOpen = true, withTotals = true, withImages = f
     const line = store.lines[gid];
     const group = groupOf(gid);
     const product = productOf(line.productId);
-    const label = itemLabel(group);
-    const forLabel = group.options.length > 1 && label !== product.name ? `<span class="for">${t('for_item', { item: esc(label) })}</span>` : '';
     const qty = line.qty > 1 ? `<span class="qty-note">${line.qty} × ${money(line.price)}</span>` : '';
     const thumb = withImages ? `<td class="thumb"><img src="${esc(product.image)}" alt="" /></td>` : '';
     const open = withOpen
       ? `<td class="act"><a class="open" href="${esc(followUrl(line.productId, store.sellerId))}" target="_blank" rel="noopener">${t('open')}</a></td>`
       : '';
-    return `<tr>${thumb}<td><a href="${esc(product.url)}" target="_blank" rel="noopener">${esc(product.name)}</a>${forLabel}${qty}</td>
+    return `<tr>${thumb}<td><a href="${esc(product.url)}" target="_blank" rel="noopener">${esc(product.name)}</a>${qty}</td>
       <td class="num">${money(line.lineTotal)}</td>${open}</tr>`;
   });
   for (const gid of store.missing ?? []) {
@@ -221,8 +218,15 @@ function openAllButton(store, gids) {
   const n = gids.filter((gid) => store.lines[gid]).length;
   if (!n) return '';
   const what = n === 1 ? t('open_all_one') : t('open_all_n', { n });
-  return `<button type="button" class="primary" data-open-all="${esc(store.sellerId)}" data-gids="${esc(gids.join(','))}">
+  return `<button type="button" class="primary" data-open-all="${esc(store.sellerId)}" data-gids="${esc(gids.join(','))}" title="${esc(t('open_all_hint'))}">
     ${t('open_all', { what, store: esc(store.storeName) })}</button>`;
+}
+
+// The line under the big total: products + shipping when shipping is paid, else just the shipping tag.
+function priceDetail(store) {
+  return store.shipping.cost > 0
+    ? t('detail_paid', { subtotal: money(store.subtotal), shipping: shippingText(store) })
+    : t('detail_free', { shipping: shippingText(store) });
 }
 
 function renderAnswer() {
@@ -244,17 +248,17 @@ function renderAnswer() {
     parts.push(`<div class="answer-card best">
       <p class="lead">${t('best_lead', { items: tn('items', n) })}</p>
       <h2>${logo(r.best)}${storeName(r.best)}</h2>
-      <div class="price-line"><span class="total">${money(r.best.total)}</span><span class="muted">${t('best_detail', { subtotal: money(r.best.subtotal), shipping: shippingText(r.best) })}</span></div>
+      <div class="price-line"><span class="total">${money(r.best.total)}</span><span class="muted">${priceDetail(r.best)}</span></div>
       ${nudge(r.best)}
       ${lines(r.best, allIds, { withTotals: false, withImages: true })}
-      <div class="actions">${openAllButton(r.best, allIds)}<span class="muted small">${t('open_all_hint')}</span></div>
+      <div class="actions">${openAllButton(r.best, allIds)}</div>
     </div>`);
   } else if (r.stores.length) {
     const top = r.stores[0];
     parts.push(`<div class="answer-card">
       <p class="lead">${t('none_lead', { n })}</p>
       <h2>${logo(top)}${t('none_title', { store: storeName(top), covered: top.covered, n })}</h2>
-      <div class="price-line"><span class="total">${money(top.total)}</span><span class="muted">${t('none_detail', { covered: top.covered, shipping: shippingText(top) })}</span></div>
+      <div class="price-line"><span class="total">${money(top.total)}</span><span class="muted">${t('none_detail', { covered: top.covered })}, ${priceDetail(top)}</span></div>
       ${lines(top, allIds, { withTotals: false, withImages: true })}
       <div class="actions">${openAllButton(top, allIds)}</div>
     </div>`);
@@ -268,14 +272,15 @@ function renderAnswer() {
       : t('split_lead_best');
     parts.push(`<div class="answer-card ${r.best ? '' : 'best'}">
       <p class="lead">${lead}</p>
-      <div class="price-line"><span class="total">${money(split.total)}</span><span class="muted">${t('split_detail', { shipping: money(split.shipping) })}</span></div>
+      <div class="price-line"><span class="total">${money(split.total)}</span><span class="muted">${split.shipping > 0 ? t('split_detail', { shipping: money(split.shipping) }) : t('split_detail_free')}</span></div>
       ${split.parts
         .map(
           (part) => `<div class="part">
             <h3>${logo(part)}${storeName(part)}<span class="part-total">${money(part.total)}</span></h3>
+            <p class="muted small part-detail">${priceDetail(part)}</p>
             ${nudge(part)}
             ${lines(part, part.itemIds, { withTotals: false, withImages: true })}
-            <div class="actions">${openAllButton(part, part.itemIds)}<span class="muted small">${t('shipping_word', { shipping: shippingText(part) })}</span></div>
+            <div class="actions">${openAllButton(part, part.itemIds)}</div>
           </div>`,
         )
         .join('')}
@@ -310,24 +315,24 @@ function renderList() {
         <img src="${esc(first.image)}" alt="" />
         <div>
           ${multi
-            ? `<span class="name">${esc(itemLabel(g))}</span><div class="sub">${tn('alternatives', g.options.length)}</div>`
+            ? `<div class="title-row"><span class="name">${esc(itemLabel(g))}</span><button type="button" class="link rename" data-act="rename" title="${esc(t('rename'))}">✎</button></div>
+               <input class="label-input" data-act="label" value="${esc(g.label)}" placeholder="${esc(t('rename_placeholder'))}" hidden />
+               <div class="sub">${tn('alternatives', g.options.length)}</div>`
             : `<a class="name" href="${esc(productUrl(first))}" target="_blank" rel="noopener">${esc(first.name)}</a><div class="sub">${info(first)}</div>`}
         </div>
         <div class="controls">
-          <span class="label">${t('quantity')}</span>
-          ${stepper('qty', g.qty)}
+          <span title="${esc(t('quantity'))}">${stepper('qty', g.qty)}</span>
           <button type="button" class="link" data-act="remove-item" title="${esc(t('remove_item'))}">✕</button>
         </div>
       </div>`;
 
       const alts = multi
-        ? `<input class="label-input" data-act="label" value="${esc(g.label)}" placeholder="${esc(t('label_placeholder'))}" />
-          <ul class="alts">${g.options
+        ? `<ul class="alts">${g.options
             .map(
               (o) => `<li class="${o.id === cheapestPid ? 'cheapest' : ''}" data-pid="${o.id}">
                 <img src="${esc(o.image)}" alt="" />
                 <div><a href="${esc(productUrl(o))}" target="_blank" rel="noopener">${esc(o.name)}</a><div class="sub muted small">${info(o)}</div></div>
-                <span class="units" title="${esc(t('units_title'))}">${stepper('units', o.units)} ${t('per_item')}</span>
+                <span class="units" title="${esc(t('units_title'))}">${stepper('units', o.units)}</span>
                 <span class="cost" title="${esc(t('cost_title'))}">${productOf(o.id)?.offers.length ? money(Math.min(...productOf(o.id).offers.map((x) => x.price)) * o.units * g.qty) : ''}</span>
                 <button type="button" class="link" data-act="remove-option" title="${esc(t('remove_alt'))}">✕</button>
               </li>`,
@@ -335,13 +340,8 @@ function renderList() {
             .join('')}</ul>`
         : '';
 
-      const others = state.list.filter((x) => x !== g);
-      const merge = others.length && !multi
-        ? `<select data-act="merge"><option value="">${t('merge_into')}</option>${others.map((x) => `<option value="${esc(x.gid)}">${esc(itemLabel(x))}</option>`).join('')}</select>`
-        : '';
       const foot = `<div class="item-foot">
         <button type="button" class="link" data-act="show-alt">${t('add_alt')}</button>
-        ${merge}
       </div>
       <form class="alt-form" data-act="add-alt" hidden>
         <input type="url" placeholder="${esc(t('alt_placeholder'))}" autocomplete="off" />
@@ -537,6 +537,14 @@ $('#items').addEventListener('click', async (event) => {
       if (!form.hidden) form.querySelector('input').focus();
       return;
     }
+    case 'rename': {
+      const input = card.querySelector('.label-input');
+      card.querySelector('.title-row').hidden = true;
+      input.hidden = false;
+      input.focus();
+      input.select();
+      return;
+    }
   }
 });
 
@@ -545,7 +553,21 @@ $('#items').addEventListener('change', (event) => {
   const gid = target.closest('.item')?.dataset.gid;
   if (!gid) return;
   if (target.dataset.act === 'label') updateItem(gid, { label: target.value.trim() });
-  if (target.dataset.act === 'merge' && target.value) mergeItems(gid, target.value);
+});
+
+// Leaving the rename box without changing anything puts the title back.
+$('#items').addEventListener('focusout', (event) => {
+  const input = event.target;
+  if (input.dataset.act !== 'label') return;
+  input.hidden = true;
+  input.closest('.item').querySelector('.title-row').hidden = false;
+});
+
+$('#items').addEventListener('keydown', (event) => {
+  if (event.target.dataset.act === 'label' && (event.key === 'Enter' || event.key === 'Escape')) {
+    if (event.key === 'Escape') event.target.value = groupOf(event.target.closest('.item').dataset.gid).label;
+    event.target.blur();
+  }
 });
 
 $('#clear').addEventListener('click', async () => {

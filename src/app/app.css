@@ -83,7 +83,7 @@ section {
 }
 
 .answer-card .lead {
-  margin: 0;
+  margin: 0 0 14px;
   color: var(--muted);
 }
 
@@ -183,6 +183,7 @@ section {
   display: flex;
   gap: 10px;
   align-items: center;
+  justify-content: flex-end;
   flex-wrap: wrap;
   margin-top: 16px;
 }
@@ -763,4 +764,23 @@ main {
     max-height: none;
     overflow: visible;
   }
+}
+
+.title-row {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.title-row .rename {
+  padding: 0 4px;
+  font-size: 13px;
+}
+
+.item .label-input {
+  margin-top: 0;
+}
+
+.part-detail {
+  margin: -2px 0 8px;
 }
