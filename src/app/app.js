@@ -41,6 +41,7 @@ const state = {
   loading: false,
   showAllStores: false,
   showAllRules: false,
+  rulesQuery: '',
 };
 
 // Words all alternatives start with, e.g. "Bioderma Atoderm Creme Ultra" for
@@ -431,9 +432,13 @@ function knownStores() {
   return [...known.values()].sort((a, b) => a.rank - b.rank || a.storeName.localeCompare(b.storeName));
 }
 
+const fold = (s) => s.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase();
+
 function renderRules() {
-  const rows = knownStores();
-  const shown = state.showAllRules ? rows : rows.slice(0, RULES_SHOWN);
+  const query = fold(state.rulesQuery.trim());
+  const all = knownStores();
+  const rows = query ? all.filter((s) => fold(s.storeName).includes(query)) : all;
+  const shown = state.showAllRules || query ? rows : rows.slice(0, RULES_SHOWN);
   const basedOn = (store) => {
     const m = store.shippingModel;
     const d = state.defaults[store.sellerId];
@@ -463,11 +468,11 @@ function renderRules() {
             : `<button type="button" class="link small" data-hide="${esc(store.sellerId)}" data-name="${esc(store.storeName)}">${t('hide_store')}</button>`}</td>
         </tr>`;
       })
-      .join('')}</tbody>`;
-  const more = rows.length - RULES_SHOWN;
+      .join('')}${shown.length ? '' : `<tr><td colspan="6" class="muted">${t('rules_no_match')}</td></tr>`}</tbody>`;
+  const more = query ? 0 : rows.length - RULES_SHOWN;
   $('#show-all-rules').hidden = more <= 0;
   $('#show-all-rules').textContent = state.showAllRules ? t('show_fewer') : t('show_all_stores', { n: rows.length });
-  $('#rules-section').hidden = !rows.length;
+  $('#rules-section').hidden = !all.length;
 
   const fileUrl = storesFileUrl();
   $('#rules-data').hidden = !fileUrl;
@@ -601,6 +606,11 @@ $('#clear').addEventListener('click', async () => {
 $('#show-all').addEventListener('click', () => {
   state.showAllStores = !state.showAllStores;
   renderStores();
+});
+
+$('#rules-search').addEventListener('input', (event) => {
+  state.rulesQuery = event.target.value;
+  renderRules();
 });
 
 $('#show-all-rules').addEventListener('click', () => {

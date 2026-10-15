@@ -20,7 +20,7 @@ const pt = {
   access_allow: 'Permitir',
   lang_label: 'Idioma',
   tab_compare: 'Comparar',
-  tab_rules: 'Portes das lojas',
+  tab_rules: 'Portes de envio',
   btn_add: 'Adicionar ao KCompare',
 
   // plurals
@@ -115,8 +115,10 @@ const pt = {
   show_fewer: 'Ver menos',
 
   // rules
-  rules_title: 'Portes das lojas',
+  rules_title: 'Portes de envio',
   rules_intro: 'O que cada loja cobra para Portugal continental e a partir de que valor oferece os portes. O KuantoKusta só mostra o custo por produto, por isso os limites vêm dos sites das lojas, do que as ofertas revelam, ou de ti. Corrige o que estiver errado e os totais atualizam.',
+  rules_search: 'Procurar loja…',
+  rules_no_match: 'Nenhuma loja com esse nome.',
   col_store: 'Loja',
   col_shipping: 'Portes',
   col_free_from: 'Grátis a partir de',
@@ -171,7 +173,7 @@ const en = {
   access_allow: 'Allow',
   lang_label: 'Language',
   tab_compare: 'Compare',
-  tab_rules: 'Store shipping',
+  tab_rules: 'Shipping',
   btn_add: 'Add to KCompare',
 
   items: '{n} item|{n} items',
@@ -260,8 +262,10 @@ const en = {
   show_all_stores: 'Show all {n} stores',
   show_fewer: 'Show fewer',
 
-  rules_title: 'Store shipping',
+  rules_title: 'Shipping',
   rules_intro: "What each store charges to mainland Portugal, and from what order value it ships free. KuantoKusta only shows the cost per product, so the thresholds come from the stores' own sites, from what their offers reveal, or from you. Correct anything that's wrong and the totals update.",
+  rules_search: 'Search stores…',
+  rules_no_match: 'No store matches.',
   col_store: 'Store',
   col_shipping: 'Shipping',
   col_free_from: 'Free from',

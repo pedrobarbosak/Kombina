@@ -876,3 +876,9 @@ main {
 button.link.small {
   font-size: 13px;
 }
+
+.search {
+  width: 100%;
+  max-width: 360px;
+  margin-top: 4px;
+}

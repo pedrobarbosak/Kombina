@@ -56,7 +56,7 @@ You can also paste product URLs on the page itself.
   two versions as separate items, **This is an alternative of…** merges them.
 - **Every store.** All stores ranked by total for your list, 8 at a time. Open one to see
   what you'd buy there, what's missing, and to **Open all** or correct its shipping (✎).
-- **Shipping rules** (second tab, `#portes`): every store's shipping cost and free-shipping
+- **Shipping rules** (second tab, `#portes`, with a search box): every store's shipping cost and free-shipping
   threshold, with its source, editable in one place.
 
 ### Shipping and free-shipping thresholds
@@ -82,7 +82,7 @@ need to add. When the threshold is unknown, it asks you to set it.
 KuantoKusta `sellerId` and has `shipping` (standard cost to mainland Portugal), `freeAbove`
 (order value from which shipping is free, `null` if none), `notes` / `notes_en`, `source`
 (the store page that states it), `checked` (date) and `confidence`. To fix a value, edit the
-file and open a pull request, or open an issue from the **Portes das lojas** tab (the ✎
+file and open a pull request, or open an issue from the **Portes de envio** tab (the ✎
 dialog has a *Suggest a correction* link that prefills it). Once `GITHUB_REPO` is set in
 `src/lib/config.js`, installed extensions pick up changes within a day without an update.
 
@@ -111,6 +111,17 @@ No build step: the files load directly as written.
 | `src/background.js` | Opens or focuses the page from the toolbar icon. Applies list changes sent by the content script. |
 | `src/content/` | Floating button and menu on product pages. Watches URL changes, because the site switches pages without reloading. |
 | `src/app/` | The KCompare page (list + results). |
+
+### Hiding stores
+**Ocultar loja** on a store card (or in the shipping table) leaves that store out of the
+comparison. Hidden stores are listed in the **Portes de envio** tab, where they can be
+shown again.
+
+## Roadmap
+- **Delivery method.** Stores charge differently for mainland Portugal, the islands, pickup
+  points and in-store pickup. `data/stores.json` only holds the standard mainland home
+  delivery today; the plan is to record the other options per store and add a picker so the
+  comparison uses the one you prefer.
 
 ## Limits
 - KuantoKusta uses Akamai bot protection. Requests only work from a normal browser
