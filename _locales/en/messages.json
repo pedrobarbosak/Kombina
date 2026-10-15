@@ -1,5 +1,5 @@
 {
-  "extName": { "message": "KuantoKompare" },
+  "extName": { "message": "KCompare" },
   "extDescription": { "message": "Make your list on kuantokusta.pt and find the store where the whole set is cheapest, shipping included." },
-  "actionTitle": { "message": "Open KuantoKompare" }
+  "actionTitle": { "message": "Open KCompare" }
 }

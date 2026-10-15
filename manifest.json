@@ -47,7 +47,7 @@
   ],
   "browser_specific_settings": {
     "gecko": {
-      "id": "kuantokompare@kuantokusta.local",
+      "id": "kcompare@kuantokusta.local",
       "strict_min_version": "121.0",
       "data_collection_permissions": {
         "required": [

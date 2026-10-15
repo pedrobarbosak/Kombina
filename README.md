@@ -1,4 +1,4 @@
-# KuantoKompare
+# KCompare
 
 Browser extension (Firefox and Chrome) for buying several products at once on
 [kuantokusta.pt](https://www.kuantokusta.pt). Add the products you want to a list and it
@@ -14,8 +14,8 @@ whichever alternative is cheapest there.
 ### Firefox (121+)
 1. Open `about:debugging#/runtime/this-firefox`.
 2. Click **Load Temporary Add-on…** and select `manifest.json` in this folder.
-3. Click the KuantoKompare toolbar icon. If the page says *"needs access to kuantokusta.pt"*,
-   click **Allow access**. You can also do it in `about:addons` → KuantoKompare → Permissions.
+3. Click the KCompare toolbar icon. If the page says *"needs access to kuantokusta.pt"*,
+   click **Allow access**. You can also do it in `about:addons` → KCompare → Permissions.
 
 A temporary add-on is removed when Firefox restarts. For a permanent install, sign it as an
 unlisted add-on on [addons.mozilla.org](https://addons.mozilla.org/developers/) (`npm run
@@ -35,15 +35,15 @@ description are in `_locales/`.
 
 **Add products.** On any kuantokusta.pt product page, use the floating button
 (bottom-right):
-- **+ Add to KuantoKompare** adds the product as a new item.
+- **+ Add to KCompare** adds the product as a new item.
 - **▾ → Add as an alternative to…** adds it as an alternative to an item already on the
   list (e.g. while viewing the refill, pick the full bottle you added earlier).
-- **▾ → Open KuantoKompare** opens the list page. Once a product is on the list, the main
+- **▾ → Open KCompare** opens the list page. Once a product is on the list, the main
   button opens the page too.
 
 You can also paste product URLs on the page itself.
 
-**The KuantoKompare page** opens when you click the toolbar icon. From top to bottom:
+**The KCompare page** opens when you click the toolbar icon. From top to bottom:
 - **The answer.** The cheapest single store for your whole list, with what you'd buy there
   and the shipping. **Open all N at …** opens one tab per product on that store's site
   (through KuantoKusta's usual "Ver na loja" link), and each line has its own **Open**.
@@ -110,7 +110,7 @@ No build step: the files load directly as written.
 | `src/lib/products.js` | Fetches offers (3 at a time) using the 15-min cache. |
 | `src/background.js` | Opens or focuses the page from the toolbar icon. Applies list changes sent by the content script. |
 | `src/content/` | Floating button and menu on product pages. Watches URL changes, because the site switches pages without reloading. |
-| `src/app/` | The KuantoKompare page (list + results). |
+| `src/app/` | The KCompare page (list + results). |
 
 ## Limits
 - KuantoKusta uses Akamai bot protection. Requests only work from a normal browser
