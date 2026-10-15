@@ -362,37 +362,27 @@ function renderList() {
       const stepper = (act, value) =>
         `<span class="stepper"><button type="button" data-act="${act}-dec" aria-label="${esc(t('fewer'))}">−</button><span>${value}</span><button type="button" data-act="${act}-inc" aria-label="${esc(t('more'))}">+</button></span>`;
 
-      // A single product: one row with its quantity.
-      const head = multi
-        ? ''
-        : `<div class="item-row">
-        <img src="${esc(first.image)}" alt="" />
-        <div><a class="name" href="${esc(productUrl(first))}" target="_blank" rel="noopener">${esc(first.name)}</a><div class="sub">${info(first)}</div></div>
-        <div class="controls">
-          <span title="${esc(t('quantity'))}">${stepper('qty', g.qty)}</span>
-          <button type="button" class="link" data-act="remove-item" title="${esc(t('remove_item'))}">✕</button>
-        </div>
-      </div>`;
-
-      // Alternatives: one row each, separated by "or"; each says how many of it you'd buy.
-      // Removing the last alternative removes the item.
-      const alts = multi
-        ? `<ul class="alts">${g.options
-            .map((o) => {
-              const min = productOf(o.id)?.offers.length ? Math.min(...productOf(o.id).offers.map((x) => x.price)) : null;
-              return `<li class="${o.id === cheapestPid ? 'cheapest' : ''}" data-pid="${o.id}">
-                <img src="${esc(o.image)}" alt="" />
-                <div class="alt-main">
-                  <a href="${esc(productUrl(o))}" target="_blank" rel="noopener">${esc(o.name)}</a>
-                  <span class="sub muted small">${info(o)}</span>
-                </div>
-                <span class="units" title="${esc(t('units_title'))}">${stepper('units', o.units)}</span>
-                <span class="cost" title="${esc(t('cost_title'))}">${min != null ? money(min * o.units * g.qty) : ''}</span>
-                <button type="button" class="link" data-act="remove-option" title="${esc(t('remove_alt'))}">✕</button>
-              </li>`;
-            })
-            .join(`<li class="or" aria-hidden="true"><span>${t('or')}</span></li>`)}</ul>`
-        : '';
+      // One row per product: image, name + store count, quantity, cheapest price for that
+      // quantity, remove. A single product's stepper is the item quantity; an alternative's
+      // stepper is how many of it you'd buy. Alternatives are separated by "or".
+      const rows = g.options
+        .map((o) => {
+          const min = productOf(o.id)?.offers.length ? Math.min(...productOf(o.id).offers.map((x) => x.price)) : null;
+          const count = multi ? o.units : g.qty;
+          return `<li class="${multi && o.id === cheapestPid ? 'cheapest' : ''}" data-pid="${o.id}">
+            <img src="${esc(o.image)}" alt="" />
+            <div class="alt-main">
+              <a href="${esc(productUrl(o))}" target="_blank" rel="noopener">${esc(o.name)}</a>
+              <span class="sub muted small">${info(o)}</span>
+            </div>
+            <span class="units" title="${esc(multi ? t('units_title') : t('quantity'))}">${stepper(multi ? 'units' : 'qty', count)}</span>
+            <span class="cost" title="${esc(t('cost_title'))}">${min != null ? money(min * count) : ''}</span>
+            <button type="button" class="link" data-act="${multi ? 'remove-option' : 'remove-item'}" title="${esc(multi ? t('remove_alt') : t('remove_item'))}">✕</button>
+          </li>`;
+        })
+        .join(`<li class="or" aria-hidden="true"><span>${t('or')}</span></li>`);
+      const head = '';
+      const alts = `<ul class="alts">${rows}</ul>`;
 
       const foot = `<div class="item-foot">
         <button type="button" class="link" data-act="show-alt">${t('add_alt')}</button>
@@ -402,7 +392,7 @@ function renderList() {
         <button type="submit">${t('add')}</button>
       </form>`;
 
-      return `<div class="item ${multi ? 'grouped' : ''}" data-gid="${esc(g.gid)}">${head}${alts}${foot}</div>`;
+      return `<div class="item grouped" data-gid="${esc(g.gid)}">${head}${alts}${foot}</div>`;
     })
     .join('');
 }
