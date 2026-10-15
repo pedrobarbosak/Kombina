@@ -952,3 +952,57 @@ button.link.small {
   align-items: center;
   gap: 5px;
 }
+
+/* ---------- compact product lines (store cards) ---------- */
+
+.lines.compact {
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.lines.compact td {
+  padding: 4px 0;
+  border-top: 0;
+  vertical-align: middle;
+}
+
+.lines.compact td.thumb {
+  width: 30px;
+  padding-right: 8px;
+}
+
+.lines.compact td.thumb img {
+  width: 28px;
+  height: 28px;
+  border-radius: 5px;
+}
+
+.lines.compact td a {
+  color: var(--muted);
+}
+
+.lines.compact .qty-note {
+  display: inline;
+  margin-left: 6px;
+}
+
+.lines.compact tr.missing td {
+  color: var(--danger);
+}
+
+.store-card {
+  padding: 12px 16px 10px;
+}
+
+.store-card header {
+  margin-bottom: 6px;
+}
+
+.store-card footer {
+  margin-top: 8px;
+}
+
+.store-card footer button.primary {
+  padding: 5px 12px;
+  font-size: 14px;
+}

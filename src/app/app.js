@@ -226,7 +226,7 @@ function shippingText(store, { withWord = false } = {}) {
 
 // What you'd buy at `store` for the given items, with totals.
 // Columns: [thumbnail] name (+ "for item", qty × price) | line total | Open
-function lines(store, gids, { withOpen = true, withTotals = true, withImages = false } = {}) {
+function lines(store, gids, { withOpen = true, withTotals = true, withImages = false, compact = false } = {}) {
   const cols = 2 + (withImages ? 1 : 0) + (withOpen ? 1 : 0);
   const pad = (n) => '<td></td>'.repeat(n);
   const rows = gids.filter((gid) => store.lines[gid]).map((gid) => {
@@ -252,7 +252,7 @@ function lines(store, gids, { withOpen = true, withTotals = true, withImages = f
        <tr class="shipping">${lead}<td>${t('row_shipping')} <button type="button" class="edit" data-seller="${esc(store.sellerId)}" title="${esc(t('edit_shipping'))}">✎</button></td><td class="num">${shippingText(store)}</td>${tail}</tr>
        <tr class="grand">${lead}<td>${t('row_total')}</td><td class="num" colspan="${cols - 1 - (withImages ? 1 : 0)}">${money(store.total)}</td></tr>`
     : '';
-  return `<table class="lines">${rows.join('')}${totals}</table>`;
+  return `<table class="lines ${compact ? 'compact' : ''}">${rows.join('')}${totals}</table>`;
 }
 
 // A line under the price when the shipping could be free, or when we don't know the threshold.
@@ -418,7 +418,7 @@ function renderStores() {
           </div>
           <div class="total ${store.complete ? '' : 'muted'}">${money(store.total)}</div>
         </header>
-        ${lines(store, allIds, { withTotals: false, withImages: true })}
+        ${lines(store, allIds, { withTotals: false, withImages: true, compact: true })}
         <footer class="actions">
           <button type="button" class="link edit" data-seller="${esc(store.sellerId)}">✎ ${t('fix_shipping')}</button>
           <button type="button" class="link icon-btn" data-hide="${esc(store.sellerId)}" data-name="${esc(store.storeName)}">${ICON_HIDE} ${t('hide_store')}</button>
@@ -510,12 +510,27 @@ function renderHidden() {
     .join('');
 }
 
+let hiding = null;
+
 document.addEventListener('click', async (event) => {
   const hide = event.target.closest('button[data-hide]');
   const unhide = event.target.closest('button[data-unhide]');
-  if (!hide && !unhide) return;
-  state.hidden = hide ? await hideStore(hide.dataset.hide, hide.dataset.name) : await unhideStore(unhide.dataset.unhide);
-  compute();
+  if (unhide) {
+    state.hidden = await unhideStore(unhide.dataset.unhide);
+    compute();
+  } else if (hide) {
+    hiding = { id: hide.dataset.hide, name: hide.dataset.name };
+    $('#hide-title').textContent = t('hide_confirm_title', { store: hiding.name });
+    $('#hide-dialog').showModal();
+  }
+});
+
+$('#hide-dialog').addEventListener('close', async () => {
+  if ($('#hide-dialog').returnValue === 'hide' && hiding) {
+    state.hidden = await hideStore(hiding.id, hiding.name);
+    compute();
+  }
+  hiding = null;
 });
 
 function render() {
