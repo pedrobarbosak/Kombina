@@ -527,7 +527,17 @@ function render() {
   renderStores();
   renderRules();
   renderHidden();
+  fitSide();
 }
+
+// The answer column pins to the top only while it fits in the viewport.
+function fitSide() {
+  const side = document.querySelector('.col-side');
+  side.classList.remove('tall');
+  side.classList.toggle('tall', side.offsetHeight + 32 > window.innerHeight);
+}
+
+window.addEventListener('resize', fitSide);
 
 // ---------- events ----------
 
