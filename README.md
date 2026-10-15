@@ -77,6 +77,16 @@ store ships free. The extension combines three sources, in this order:
 When the winning store's shipping could become free, the answer says how much more you'd
 need to add. When the threshold is unknown, it asks you to set it.
 
+### Keeping the shipping data fresh
+- **In the extension:** the **Atualizar portes** button on the Lojas tab (and **Atualizar** in
+  the header) re-reads the store rules from GitHub, when configured, and re-checks the
+  shipping KuantoKusta shows on every product in the list. The page also does this on its own
+  once a day (the GitHub copy is fetched at most once a day, whenever the page opens). Rules checked more
+  than 90 days ago are tagged *a verificar*.
+- **In the repository:** `npm run stale` lists the stores to re-check, and
+  `.github/workflows/stale-stores.yml` runs it on the 1st of every month, opening (or updating)
+  a "Re-check shipping data" issue with the list.
+
 ### Correcting the shipping data
 `data/stores.json` is meant to be maintained in the open. Each entry is keyed by the
 KuantoKusta `sellerId` and has `shipping` (standard cost to mainland Portugal), `freeAbove`

@@ -2,6 +2,8 @@ export default {
   ignoreFiles: [
     'tests',
     'scripts',
+    'docs',
+    '.github',
     'package.json',
     'package-lock.json',
     'web-ext-config.mjs',
