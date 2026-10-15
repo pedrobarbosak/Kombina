@@ -293,33 +293,65 @@ section {
   margin: 10px 0 0 56px;
   padding: 0;
   list-style: none;
-  border-top: 1px solid var(--border);
 }
 
 .alts li {
   display: grid;
-  grid-template-columns: 32px 1fr auto auto auto;
+  grid-template-columns: 10px 1fr auto auto;
   gap: 10px;
   align-items: center;
-  padding: 8px 0;
-  border-bottom: 1px solid var(--border);
+  padding: 7px 0;
+  border-top: 1px solid var(--border);
   font-size: 14px;
 }
 
-.alts img {
-  width: 32px;
-  height: 32px;
-  object-fit: contain;
-  border-radius: 6px;
-  background: #fff;
+.alts .dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  border: 2px solid var(--border);
 }
 
-.alts .units {
-  display: inline-flex;
+.alts li.cheapest .dot {
+  background: var(--good);
+  border-color: var(--good);
+}
+
+.alt-main {
+  display: flex;
   align-items: center;
-  gap: 6px;
+  flex-wrap: wrap;
+  gap: 4px 10px;
+  min-width: 0;
+}
+
+.alt-main a {
+  font-weight: 500;
+}
+
+.alt-main .sub {
+  flex-basis: 100%;
+}
+
+.units-chip {
+  padding: 0 7px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
   color: var(--muted);
-  font-size: 13px;
+  background: var(--surface-2);
+  border-color: transparent;
+  line-height: 20px;
+}
+
+.units-chip:hover {
+  color: var(--text);
+  border-color: var(--border);
+}
+
+.units.editing .stepper button {
+  width: 24px;
+  height: 24px;
 }
 
 .alts .cost {
@@ -529,11 +561,7 @@ dialog label {
   }
 
   .alts li {
-    grid-template-columns: 32px 1fr auto;
-  }
-
-  .alts .units {
-    grid-column: 2;
+    grid-template-columns: 10px 1fr auto auto;
   }
 
   .store-body {

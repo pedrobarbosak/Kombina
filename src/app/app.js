@@ -37,9 +37,32 @@ const state = {
   loading: false,
   showAllStores: false,
   showAllRules: false,
+  editingUnits: null, // productId whose "×n" chip is open as a stepper
 };
 
-const itemLabel = (g) => g.label || g.options[0]?.name || 'Item';
+// Words all alternatives start with, e.g. "Bioderma Atoderm Creme Ultra" for
+// "… Creme Ultra Hidratante 2x500ml" and "… Creme Ultra 500ml". Empty if fewer than 2 words.
+function sharedPrefix(names) {
+  if (names.length < 2) return '';
+  const words = names.map((n) => n.split(/\s+/));
+  const prefix = [];
+  for (let i = 0; i < Math.min(...words.map((w) => w.length)); i++) {
+    const w = words[0][i];
+    if (!words.every((ws) => ws[i].localeCompare(w, undefined, { sensitivity: 'base' }) === 0)) break;
+    prefix.push(w);
+  }
+  if (prefix.length < 2 || prefix.length === Math.min(...words.map((w) => w.length))) return '';
+  return prefix.join(' ');
+}
+
+const itemLabel = (g) =>
+  g.label || (g.options.length > 1 && sharedPrefix(g.options.map((o) => o.name))) || g.options[0]?.name || 'Item';
+
+// How an alternative is shown inside its item: just what differs from the shared prefix.
+function optionLabel(g, o) {
+  const prefix = g.label ? '' : sharedPrefix(g.options.map((x) => x.name));
+  return prefix && o.name.toLowerCase().startsWith(prefix.toLowerCase()) ? o.name.slice(prefix.length).trim() : o.name;
+}
 const groupOf = (gid) => state.list.find((g) => g.gid === gid);
 const productOf = (id) => state.products.get(id)?.product ?? null;
 const loadedProducts = () =>
@@ -311,13 +334,14 @@ function renderList() {
       const stepper = (act, value) =>
         `<span class="stepper"><button type="button" data-act="${act}-dec" aria-label="${esc(t('fewer'))}">−</button><span>${value}</span><button type="button" data-act="${act}-inc" aria-label="${esc(t('more'))}">+</button></span>`;
 
+      const cheapestOpt = g.options.find((o) => o.id === cheapestPid) ?? first;
       const head = `<div class="item-row">
-        <img src="${esc(first.image)}" alt="" />
+        <img src="${esc(cheapestOpt.image)}" alt="" />
         <div>
           ${multi
             ? `<div class="title-row"><span class="name">${esc(itemLabel(g))}</span><button type="button" class="link rename" data-act="rename" title="${esc(t('rename'))}">✎</button></div>
                <input class="label-input" data-act="label" value="${esc(g.label)}" placeholder="${esc(t('rename_placeholder'))}" hidden />
-               <div class="sub">${tn('alternatives', g.options.length)}</div>`
+               <div class="sub">${tn('alternatives', g.options.length)}: ${t('alts_hint')}</div>`
             : `<a class="name" href="${esc(productUrl(first))}" target="_blank" rel="noopener">${esc(first.name)}</a><div class="sub">${info(first)}</div>`}
         </div>
         <div class="controls">
@@ -328,15 +352,23 @@ function renderList() {
 
       const alts = multi
         ? `<ul class="alts">${g.options
-            .map(
-              (o) => `<li class="${o.id === cheapestPid ? 'cheapest' : ''}" data-pid="${o.id}">
-                <img src="${esc(o.image)}" alt="" />
-                <div><a href="${esc(productUrl(o))}" target="_blank" rel="noopener">${esc(o.name)}</a><div class="sub muted small">${info(o)}</div></div>
-                <span class="units" title="${esc(t('units_title'))}">${stepper('units', o.units)}</span>
-                <span class="cost" title="${esc(t('cost_title'))}">${productOf(o.id)?.offers.length ? money(Math.min(...productOf(o.id).offers.map((x) => x.price)) * o.units * g.qty) : ''}</span>
+            .map((o) => {
+              const min = productOf(o.id)?.offers.length ? Math.min(...productOf(o.id).offers.map((x) => x.price)) : null;
+              const units =
+                state.editingUnits === o.id
+                  ? `<span class="units editing">${stepper('units', o.units)}</span>`
+                  : `<button type="button" class="units-chip" data-act="units-edit" title="${esc(t('units_title'))}">${t('units_chip', { n: o.units })}</button>`;
+              return `<li class="${o.id === cheapestPid ? 'cheapest' : ''}" data-pid="${o.id}">
+                <span class="dot" aria-hidden="true"></span>
+                <div class="alt-main">
+                  <a href="${esc(productUrl(o))}" target="_blank" rel="noopener" title="${esc(o.name)}">${esc(optionLabel(g, o))}</a>
+                  ${units}
+                  <span class="sub muted small">${info(o)}</span>
+                </div>
+                <span class="cost" title="${esc(t('cost_title'))}">${min != null ? money(min * o.units * g.qty) : ''}</span>
                 <button type="button" class="link" data-act="remove-option" title="${esc(t('remove_alt'))}">✕</button>
-              </li>`,
-            )
+              </li>`;
+            })
             .join('')}</ul>`
         : '';
 
@@ -537,6 +569,11 @@ $('#items').addEventListener('click', async (event) => {
       if (!form.hidden) form.querySelector('input').focus();
       return;
     }
+    case 'units-edit':
+      state.editingUnits = pid;
+      renderList();
+      card.querySelector(`li[data-pid="${pid}"] .units button`)?.focus();
+      return;
     case 'rename': {
       const input = card.querySelector('.label-input');
       card.querySelector('.title-row').hidden = true;
@@ -553,6 +590,14 @@ $('#items').addEventListener('change', (event) => {
   const gid = target.closest('.item')?.dataset.gid;
   if (!gid) return;
   if (target.dataset.act === 'label') updateItem(gid, { label: target.value.trim() });
+});
+
+// Clicking anywhere outside an open "×n" stepper turns it back into a chip.
+document.addEventListener('click', (event) => {
+  if (state.editingUnits != null && !event.target.closest('.units.editing, .units-chip')) {
+    state.editingUnits = null;
+    renderList();
+  }
 });
 
 // Leaving the rename box without changing anything puts the title back.
