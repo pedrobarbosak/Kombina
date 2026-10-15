@@ -57,11 +57,6 @@ function sharedPrefix(names) {
 const itemLabel = (g) =>
   g.label || (g.options.length > 1 && sharedPrefix(g.options.map((o) => o.name))) || g.options[0]?.name || 'Item';
 
-// How an alternative is shown inside its item: just what differs from the shared prefix.
-function optionLabel(g, o) {
-  const prefix = g.label ? '' : sharedPrefix(g.options.map((x) => x.name));
-  return prefix && o.name.toLowerCase().startsWith(prefix.toLowerCase()) ? o.name.slice(prefix.length).trim() : o.name;
-}
 const groupOf = (gid) => state.list.find((g) => g.gid === gid);
 const productOf = (id) => state.products.get(id)?.product ?? null;
 const loadedProducts = () =>
@@ -333,22 +328,20 @@ function renderList() {
       const stepper = (act, value) =>
         `<span class="stepper"><button type="button" data-act="${act}-dec" aria-label="${esc(t('fewer'))}">−</button><span>${value}</span><button type="button" data-act="${act}-inc" aria-label="${esc(t('more'))}">+</button></span>`;
 
-      const cheapestOpt = g.options.find((o) => o.id === cheapestPid) ?? first;
-      const head = `<div class="item-row">
-        <img src="${esc(cheapestOpt.image)}" alt="" />
-        <div>
-          ${multi
-            ? `<div class="title-row"><span class="name">${esc(itemLabel(g))}</span><button type="button" class="link rename" data-act="rename" title="${esc(t('rename'))}">✎</button></div>
-               <input class="label-input" data-act="label" value="${esc(g.label)}" placeholder="${esc(t('rename_placeholder'))}" hidden />`
-            : `<a class="name" href="${esc(productUrl(first))}" target="_blank" rel="noopener">${esc(first.name)}</a><div class="sub">${info(first)}</div>`}
-        </div>
+      // A single product: one row with its quantity.
+      const head = multi
+        ? ''
+        : `<div class="item-row">
+        <img src="${esc(first.image)}" alt="" />
+        <div><a class="name" href="${esc(productUrl(first))}" target="_blank" rel="noopener">${esc(first.name)}</a><div class="sub">${info(first)}</div></div>
         <div class="controls">
-          ${multi ? '' : `<span title="${esc(t('quantity'))}">${stepper('qty', g.qty)}</span>`}
+          <span title="${esc(t('quantity'))}">${stepper('qty', g.qty)}</span>
           <button type="button" class="link" data-act="remove-item" title="${esc(t('remove_item'))}">✕</button>
         </div>
       </div>`;
 
-      // Grouped items have no quantity of their own: each alternative says how many of it you'd buy.
+      // Alternatives: one row each, separated by "or"; each says how many of it you'd buy.
+      // Removing the last alternative removes the item.
       const alts = multi
         ? `<ul class="alts">${g.options
             .map((o) => {
@@ -356,7 +349,7 @@ function renderList() {
               return `<li class="${o.id === cheapestPid ? 'cheapest' : ''}" data-pid="${o.id}">
                 <img src="${esc(o.image)}" alt="" />
                 <div class="alt-main">
-                  <a href="${esc(productUrl(o))}" target="_blank" rel="noopener" title="${esc(o.name)}">${esc(optionLabel(g, o))}</a>
+                  <a href="${esc(productUrl(o))}" target="_blank" rel="noopener">${esc(o.name)}</a>
                   <span class="sub muted small">${info(o)}</span>
                 </div>
                 <span class="units" title="${esc(t('units_title'))}">${stepper('units', o.units)}</span>
@@ -375,7 +368,7 @@ function renderList() {
         <button type="submit">${t('add')}</button>
       </form>`;
 
-      return `<div class="item" data-gid="${esc(g.gid)}">${head}${alts}${foot}</div>`;
+      return `<div class="item ${multi ? 'grouped' : ''}" data-gid="${esc(g.gid)}">${head}${alts}${foot}</div>`;
     })
     .join('');
 }
@@ -564,36 +557,6 @@ $('#items').addEventListener('click', async (event) => {
       if (!form.hidden) form.querySelector('input').focus();
       return;
     }
-    case 'rename': {
-      const input = card.querySelector('.label-input');
-      card.querySelector('.title-row').hidden = true;
-      input.hidden = false;
-      input.focus();
-      input.select();
-      return;
-    }
-  }
-});
-
-$('#items').addEventListener('change', (event) => {
-  const target = event.target;
-  const gid = target.closest('.item')?.dataset.gid;
-  if (!gid) return;
-  if (target.dataset.act === 'label') updateItem(gid, { label: target.value.trim() });
-});
-
-// Leaving the rename box without changing anything puts the title back.
-$('#items').addEventListener('focusout', (event) => {
-  const input = event.target;
-  if (input.dataset.act !== 'label') return;
-  input.hidden = true;
-  input.closest('.item').querySelector('.title-row').hidden = false;
-});
-
-$('#items').addEventListener('keydown', (event) => {
-  if (event.target.dataset.act === 'label' && (event.key === 'Enter' || event.key === 'Escape')) {
-    if (event.key === 'Escape') event.target.value = groupOf(event.target.closest('.item').dataset.gid).label;
-    event.target.blur();
   }
 });
 

@@ -283,12 +283,6 @@ section {
   font-size: 13px;
 }
 
-.item .label-input {
-  width: 100%;
-  margin-top: 10px;
-  font-weight: 600;
-}
-
 .alts {
   margin: 10px 0 0 56px;
   padding: 0;
@@ -787,21 +781,16 @@ main {
   }
 }
 
-.title-row {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-}
-
-.title-row .rename {
-  padding: 0 4px;
-  font-size: 13px;
-}
-
-.item .label-input {
-  margin-top: 0;
-}
-
 .part-detail {
   margin: -2px 0 8px;
+}
+
+.item.grouped .alts,
+.item.grouped .item-foot,
+.item.grouped .alt-form {
+  margin-left: 0;
+}
+
+.item.grouped .alts {
+  margin-top: 0;
 }
