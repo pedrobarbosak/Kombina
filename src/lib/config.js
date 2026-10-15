@@ -1,7 +1,7 @@
 // Public repository that holds data/stores.json. Leave empty until the repo exists:
 // with it set, the page refreshes the shipping rules from GitHub once a day and
 // offers a "suggest a correction" link that opens a prefilled issue.
-export const GITHUB_REPO = ''; // e.g. 'owner/kombina'
+export const GITHUB_REPO = 'pedrobarbosak/Kombina';
 export const GITHUB_BRANCH = 'main';
 export const STORES_PATH = 'data/stores.json';
 
