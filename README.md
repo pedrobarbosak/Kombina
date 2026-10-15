@@ -24,8 +24,9 @@ the least money, shipping included.
 
 ## Install
 
-Kombina isn't on the browser stores yet, so it's loaded from this folder. First clone the
-repository, or download it as a ZIP from GitHub and unzip it.
+Kombina is being submitted to Firefox Add-ons and the Chrome Web Store; links will be added
+here once it's approved. Until then, load it from this folder: clone the repository, or
+download it as a ZIP from GitHub and unzip it.
 
 **Firefox (121 or newer)**
 
@@ -87,7 +88,8 @@ npm test               # unit tests for the page parser and the optimizer
 npm run lint           # web-ext lint
 npm run start:firefox  # a temporary Firefox profile with the extension loaded
 npm run start:chrome
-npm run build          # zip in web-ext-artifacts/
+npm run build          # store packages: dist/kombina-firefox-<version>.zip and dist/kombina-chrome-<version>.zip
+npm run lint:firefox   # build the Firefox package and lint it the way AMO does
 npm run stale          # stores whose shipping rules are older than 90 days
 ```
 
@@ -99,7 +101,9 @@ npm run stale          # stores whose shipping rules are older than 90 days
 | `src/app/` | The Kombina page. |
 | `src/content/` | The button and menu on kuantokusta.pt product pages. |
 | `src/shared/i18n.js` | Portuguese and English strings for the page (`src/content/strings.js` for the button). |
-| `data/stores.json` | Shipping rules per store. Set `GITHUB_REPO` in `src/lib/config.js` and installed copies refresh it from GitHub once a day. |
+| `data/stores.json` | Shipping rules per store. Installed copies refresh it from this repository once a day (`GITHUB_REPO` in `src/lib/config.js`). |
+| `scripts/build.mjs` | Builds one package per browser, each with its own manifest (`background.scripts` for Firefox, `background.service_worker` for Chrome). |
+| `store/` | Store listing texts (PT/EN), permission justifications, screenshots and promo tiles. |
 
 ## Limits
 
@@ -109,6 +113,8 @@ npm run stale          # stores whose shipping rules are older than 90 days
   method can change it, so check the total at the store's checkout.
 - The 2-store split gives each product to whichever of the two stores is cheaper for it; it
   doesn't move products around to reach a free-shipping threshold.
+
+Kombina doesn't collect or send personal data; see the [privacy policy](PRIVACY.md).
 
 Kombina is an independent project, not affiliated with KuantoKusta or any of the stores.
 
