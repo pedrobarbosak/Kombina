@@ -69,6 +69,8 @@ export const addAlternative = (gid, product, units = 1) =>
   editList((list) => {
     const group = list.find((g) => g.gid === gid);
     if (!group || group.options.some((o) => o.id === Number(product.id))) return;
+    // A grouped item has no quantity of its own; each alternative carries its count.
+    group.qty = 1;
     group.options.push(toOption(product, units));
   });
 

@@ -29,7 +29,6 @@ const pt = {
   products: '{n} produto|{n} produtos',
   alternatives: '{n} alternativa|{n} alternativas',
   alts_hint: 'qualquer uma serve; em cada loja conta a mais barata',
-  units_chip: '×{n}',
 
   // answer
   best_lead: 'Loja mais barata para os teus {items}',
@@ -91,7 +90,7 @@ const pt = {
   info_stores: '{stores}, desde {min}',
   rename: 'Mudar o nome',
   rename_placeholder: 'Nome do artigo',
-  units_title: 'Quantas unidades deste produto equivalem a 1 do artigo (clica para alterar)',
+  units_title: 'Quantas unidades compravas desta alternativa',
   per_item: 'por artigo',
   cost_title: 'Mais barato em qualquer loja, para a quantidade que queres',
   remove_alt: 'Remover esta alternativa',
@@ -175,7 +174,6 @@ const en = {
   products: '{n} product|{n} products',
   alternatives: '{n} alternative|{n} alternatives',
   alts_hint: 'any of them will do; the cheapest one counts at each store',
-  units_chip: '×{n}',
 
   best_lead: 'Cheapest single store for your {items}',
   detail_paid: '{subtotal} for products + shipping {shipping}',
@@ -234,7 +232,7 @@ const en = {
   info_stores: '{stores}, from {min}',
   rename: 'Rename',
   rename_placeholder: 'Item name',
-  units_title: 'How many of this product equal 1 of the item (click to change)',
+  units_title: 'How many of this alternative you would buy',
   per_item: 'per item',
   cost_title: 'Cheapest anywhere, for the quantity you want',
   remove_alt: 'Remove this alternative',

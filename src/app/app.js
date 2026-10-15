@@ -37,7 +37,6 @@ const state = {
   loading: false,
   showAllStores: false,
   showAllRules: false,
-  editingUnits: null, // productId whose "×n" chip is open as a stepper
 };
 
 // Words all alternatives start with, e.g. "Bioderma Atoderm Creme Ultra" for
@@ -345,26 +344,23 @@ function renderList() {
             : `<a class="name" href="${esc(productUrl(first))}" target="_blank" rel="noopener">${esc(first.name)}</a><div class="sub">${info(first)}</div>`}
         </div>
         <div class="controls">
-          <span title="${esc(t('quantity'))}">${stepper('qty', g.qty)}</span>
+          ${multi ? '' : `<span title="${esc(t('quantity'))}">${stepper('qty', g.qty)}</span>`}
           <button type="button" class="link" data-act="remove-item" title="${esc(t('remove_item'))}">✕</button>
         </div>
       </div>`;
 
+      // Grouped items have no quantity of their own: each alternative says how many of it you'd buy.
       const alts = multi
         ? `<ul class="alts">${g.options
             .map((o) => {
               const min = productOf(o.id)?.offers.length ? Math.min(...productOf(o.id).offers.map((x) => x.price)) : null;
-              const units =
-                state.editingUnits === o.id
-                  ? `<span class="units editing">${stepper('units', o.units)}</span>`
-                  : `<button type="button" class="units-chip" data-act="units-edit" title="${esc(t('units_title'))}">${t('units_chip', { n: o.units })}</button>`;
               return `<li class="${o.id === cheapestPid ? 'cheapest' : ''}" data-pid="${o.id}">
-                <span class="dot" aria-hidden="true"></span>
+                <img src="${esc(o.image)}" alt="" />
                 <div class="alt-main">
                   <a href="${esc(productUrl(o))}" target="_blank" rel="noopener" title="${esc(o.name)}">${esc(optionLabel(g, o))}</a>
-                  ${units}
                   <span class="sub muted small">${info(o)}</span>
                 </div>
+                <span class="units" title="${esc(t('units_title'))}">${stepper('units', o.units)}</span>
                 <span class="cost" title="${esc(t('cost_title'))}">${min != null ? money(min * o.units * g.qty) : ''}</span>
                 <button type="button" class="link" data-act="remove-option" title="${esc(t('remove_alt'))}">✕</button>
               </li>`;
@@ -569,11 +565,6 @@ $('#items').addEventListener('click', async (event) => {
       if (!form.hidden) form.querySelector('input').focus();
       return;
     }
-    case 'units-edit':
-      state.editingUnits = pid;
-      renderList();
-      card.querySelector(`li[data-pid="${pid}"] .units button`)?.focus();
-      return;
     case 'rename': {
       const input = card.querySelector('.label-input');
       card.querySelector('.title-row').hidden = true;
@@ -590,14 +581,6 @@ $('#items').addEventListener('change', (event) => {
   const gid = target.closest('.item')?.dataset.gid;
   if (!gid) return;
   if (target.dataset.act === 'label') updateItem(gid, { label: target.value.trim() });
-});
-
-// Clicking anywhere outside an open "×n" stepper turns it back into a chip.
-document.addEventListener('click', (event) => {
-  if (state.editingUnits != null && !event.target.closest('.units.editing, .units-chip')) {
-    state.editingUnits = null;
-    renderList();
-  }
 });
 
 // Leaving the rename box without changing anything puts the title back.

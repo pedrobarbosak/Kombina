@@ -297,31 +297,23 @@ section {
 
 .alts li {
   display: grid;
-  grid-template-columns: 10px 1fr auto auto;
-  gap: 10px;
+  grid-template-columns: 36px 1fr auto auto auto;
+  gap: 12px;
   align-items: center;
-  padding: 7px 0;
+  padding: 8px 0;
   border-top: 1px solid var(--border);
   font-size: 14px;
 }
 
-.alts .dot {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  border: 2px solid var(--border);
-}
-
-.alts li.cheapest .dot {
-  background: var(--good);
-  border-color: var(--good);
+.alts img {
+  width: 36px;
+  height: 36px;
+  object-fit: contain;
+  border-radius: 6px;
+  background: #fff;
 }
 
 .alt-main {
-  display: flex;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 4px 10px;
   min-width: 0;
 }
 
@@ -330,28 +322,7 @@ section {
 }
 
 .alt-main .sub {
-  flex-basis: 100%;
-}
-
-.units-chip {
-  padding: 0 7px;
-  border-radius: 999px;
-  font-size: 12px;
-  font-weight: 600;
-  color: var(--muted);
-  background: var(--surface-2);
-  border-color: transparent;
-  line-height: 20px;
-}
-
-.units-chip:hover {
-  color: var(--text);
-  border-color: var(--border);
-}
-
-.units.editing .stepper button {
-  width: 24px;
-  height: 24px;
+  display: block;
 }
 
 .alts .cost {
@@ -561,7 +532,12 @@ dialog label {
   }
 
   .alts li {
-    grid-template-columns: 10px 1fr auto auto;
+    grid-template-columns: 36px 1fr auto;
+  }
+
+  .alts .units,
+  .alts .cost {
+    grid-column: 2;
   }
 
   .store-body {
