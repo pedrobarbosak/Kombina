@@ -8,7 +8,6 @@ export default {
     'package-lock.json',
     'web-ext-config.mjs',
     'README.md',
-    'LICENSE',
     'web-ext-artifacts',
     'node_modules',
   ],
